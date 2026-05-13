@@ -1,0 +1,558 @@
+\documentclass{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{longtable}
+\usepackage{hyperref}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{enumitem}
+
+\title{Software Requirements Specification (SRS)\\
+\large LA City Sidewalk Assessment Simulation}
+\author{James Barron --- SRS Lead / Requirements}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+\newpage
+\tableofcontents
+\newpage
+
+% -----------------------------------------------------------------------
+\section{Revision History}
+% -----------------------------------------------------------------------
+
+\begin{longtable}{|p{1.3in}|p{1in}|p{2.6in}|p{0.8in}|}
+\hline
+\textbf{Name} & \textbf{Date} & \textbf{Reason for Change} & \textbf{Version} \\
+\hline
+James Barron & 2025-01-15 & Initial Snapshot 1 SRS draft & 1.0 \\
+\hline
+James Barron & 2025-04-10 & Snapshot 2: added data processing and displacement pipeline requirements & 2.0 \\
+\hline
+James Barron & 2025-07-08 & Snapshot 3: added semi-autonomous navigation requirements & 3.0 \\
+\hline
+James Barron & 2025-10-20 & Snapshot 4: final revision, completed and deferred features, future work & 4.0 \\
+\hline
+\end{longtable}
+
+% -----------------------------------------------------------------------
+\section{Introduction}
+% -----------------------------------------------------------------------
+
+\subsection{Purpose}
+This Software Requirements Specification (SRS) defines the functional and nonfunctional requirements
+for the LA City Sidewalk Assessment simulation system. The document is intended for use by the
+development team, project advisor, QA testers, and LA City Bureau of Engineering (BOE) reviewers.
+It serves as the single source of truth for what the system is required to do and the constraints
+under which it must operate.
+
+This SRS is a living document updated at each project snapshot. Version 1.0 establishes the project
+scope and baseline requirements. Subsequent versions expand on technical features as they are
+designed and validated.
+
+\subsection{Product Scope}
+The LA City Sidewalk Assessment system supports a rover-based sidewalk inspection workflow. The
+software goal is to collect sidewalk scan data, process LiDAR and point-cloud information, identify
+sidewalk joints and cracks, measure pavement displacement, and produce outputs suitable for LA City
+Bureau of Engineering review. The simulated 12-month development timeline covers:
+
+\begin{itemize}
+  \item Field data collection via rover-mounted and iPhone LiDAR sensors.
+  \item Point-cloud processing to generate orthoimages and Digital Elevation Models (DEMs).
+  \item Deep-learning-based segmentation using a U-Net model to detect cracks and joints.
+  \item Vertical and horizontal displacement measurement and CSV export.
+  \item Semi-autonomous rover navigation with GPS waypoints, obstacle detection, and safety stops.
+  \item A reviewer-facing dashboard for accessing assessment outputs.
+\end{itemize}
+
+\subsection{Definitions, Acronyms, and Abbreviations}
+See Section~\ref{sec:glossary} for a full glossary.
+
+\subsection{References}
+\begin{itemize}
+  \item CS3338 Final Project Assignment Description.
+  \item LA City Bureau of Engineering sidewalk inspection guidelines.
+  \item Americans with Disabilities Act (ADA) Accessibility Standards.
+  \item CS3338\_LA\_City\_Sidewalk\_Project\_Step\_by\_Step\_Plan.pdf.
+\end{itemize}
+
+\subsection{Overview}
+Section~\ref{sec:overall} provides a high-level product description. Section~\ref{sec:interfaces}
+describes external interfaces. Section~\ref{sec:functional} lists all functional requirements.
+Section~\ref{sec:nonfunctional} covers nonfunctional requirements. Section~\ref{sec:legal} addresses
+legal and ethical considerations. Section~\ref{sec:glossary} is the glossary.
+
+% -----------------------------------------------------------------------
+\section{Overall Description}
+\label{sec:overall}
+% -----------------------------------------------------------------------
+
+\subsection{Product Perspective}
+The LA City Sidewalk Assessment system is a new, self-contained simulation of a software product
+that would be deployed by city engineering teams to replace or augment manual sidewalk inspection.
+The system interfaces with physical sensors (LiDAR, GPS, cameras) through a Raspberry Pi / ROS
+layer, and with cloud or local storage through a Python-based processing backend.
+
+\subsection{Product Functions}
+At a high level the system shall:
+\begin{enumerate}
+  \item Accept raw scan data from rover-mounted or iPhone LiDAR devices.
+  \item Convert point-cloud files (LAS/PLY) into orthoimages and elevation images.
+  \item Run a U-Net segmentation model to produce crack and joint masks.
+  \item Compute vertical displacement from DEM and mask alignment.
+  \item Research and document horizontal displacement methodology.
+  \item Export results as CSV files and visualization images.
+  \item Support semi-autonomous rover navigation via GPS waypoints.
+  \item Detect obstacles and execute manual override or safe-stop procedures.
+  \item Log telemetry data for later review.
+  \item Present outputs through a browser-based reviewer dashboard.
+\end{enumerate}
+
+\subsection{User Classes and Characteristics}
+
+\begin{longtable}{|p{1.5in}|p{2in}|p{2.5in}|}
+\hline
+\textbf{User Class} & \textbf{Description} & \textbf{Skill Level / Needs} \\
+\hline
+Rover Operator & Field technician who deploys the rover and monitors navigation. &
+  Moderate technical skill. Needs a simple UI for mission start, stop, manual override, and live
+  telemetry view. \\
+\hline
+Software Developer & Team member who builds, maintains, and extends the processing pipeline. &
+  High technical skill. Needs clear API contracts, Docker documentation, and test coverage. \\
+\hline
+QA Tester & Team member responsible for test case creation and TestRail reporting. &
+  Moderate technical skill. Needs traceability from requirements to test cases and clear pass/fail
+  criteria. \\
+\hline
+BOE / Civil Engineering Reviewer & City engineer who reviews sidewalk assessment outputs. &
+  Domain expert, low software skill. Needs readable CSV exports, visualizations, and a simple
+  dashboard. \\
+\hline
+Project Advisor & CS professor who evaluates the simulation for academic correctness. &
+  High academic skill. Needs complete documentation, Jira evidence, GitHub history, and TestRail
+  reports. \\
+\hline
+\end{longtable}
+
+\subsection{Operating Environment}
+\begin{itemize}
+  \item \textbf{Hardware:} Rover with Raspberry Pi 4, iPhone 14 Pro (LiDAR), GPS module, obstacle
+    detection camera.
+  \item \textbf{Software:} Ubuntu 22.04 on the processing workstation; ROS Noetic on the
+    Raspberry Pi; Docker and docker-compose for service orchestration; Python 3.10 for the data
+    processing and ML pipeline.
+  \item \textbf{Network:} Local network or Wi-Fi for rover-to-workstation communication;
+    internet access for GitHub, Jira, and TestRail.
+  \item \textbf{Storage:} Local volume or Azure Blob Storage placeholder for raw scans,
+    processed data, and model weights.
+\end{itemize}
+
+\subsection{Design and Implementation Constraints}
+\begin{itemize}
+  \item The system must run within Docker containers to ensure reproducibility.
+  \item Machine learning inference must run on available CPU/GPU without cloud dependency.
+  \item LiDAR data files must be in LAS or PLY format.
+  \item The U-Net model weights file must be stored at \texttt{storage/models/unet\_model.h5}.
+  \item All configuration must be done through environment variables; no hard-coded credentials.
+\end{itemize}
+
+\subsection{Assumptions and Dependencies}
+\begin{itemize}
+  \item It is assumed that field scan data is already collected before software processing begins.
+  \item The team does not need to train the U-Net model from scratch; pre-trained weights are
+    supplied.
+  \item GPS accuracy is assumed sufficient for waypoint navigation within a city block.
+  \item The Jira project and GitHub repository are set up by the Project Manager before any
+    development work begins.
+\end{itemize}
+
+% -----------------------------------------------------------------------
+\section{External Interface Requirements}
+\label{sec:interfaces}
+% -----------------------------------------------------------------------
+
+\subsection{User Interfaces}
+\begin{itemize}
+  \item \textbf{Dashboard (UI-1):} A browser-based dashboard accessible at
+    \texttt{http://localhost:5173}. Displays mission status, recent scan results, displacement
+    summaries, and links to CSV exports.
+  \item \textbf{Upload Scan (UI-2):} A file upload form accepting LAS and PLY point-cloud files
+    up to 2 GB per scan.
+  \item \textbf{Scan Review (UI-3):} A page showing orthoimage and segmentation mask
+    side-by-side for a selected scan.
+  \item \textbf{Displacement Results (UI-4):} A table and chart view of vertical displacement
+    measurements per sidewalk segment.
+  \item \textbf{Rover Navigation (UI-5):} A map-based panel showing live rover position,
+    waypoint queue, obstacle events, and manual override controls.
+  \item \textbf{Test Logs (UI-6):} A read-only log view for telemetry and processing events.
+  \item \textbf{Admin Settings (UI-7):} A settings page for configuring storage paths, model
+    path, and notification thresholds.
+\end{itemize}
+
+\subsection{Hardware Interfaces}
+\begin{itemize}
+  \item \textbf{Rover / Raspberry Pi (HW-1):} The backend communicates with the Raspberry Pi
+    over a local network socket using ROS Bridge or a simulated REST interface.
+  \item \textbf{iPhone LiDAR (HW-2):} The iPhone 14 Pro records point-cloud files that are
+    transferred to the workstation via file export.
+  \item \textbf{GPS Module (HW-3):} A NMEA-compatible GPS module attached to the rover provides
+    latitude/longitude coordinates at 1 Hz.
+  \item \textbf{Obstacle Camera (HW-4):} A forward-facing camera on the rover streams frames
+    to the obstacle detection module.
+\end{itemize}
+
+\subsection{Software Interfaces}
+\begin{itemize}
+  \item \textbf{Python 3.10 (SW-1):} All processing scripts run on Python 3.10.
+  \item \textbf{TensorFlow / Keras (SW-2):} Used to load and run the U-Net segmentation model.
+  \item \textbf{ROS / ROS Bridge (SW-3):} Simulated or real ROS topics for rover control,
+    telemetry, and navigation.
+  \item \textbf{PostgreSQL 16 (SW-4):} Stores scan metadata, job status, and displacement
+    records.
+  \item \textbf{FastAPI (SW-5):} Backend REST API for file upload, job management, and result
+    retrieval.
+  \item \textbf{React / Vite (SW-6):} Frontend single-page application served on port 5173.
+  \item \textbf{Docker / docker-compose (SW-7):} Orchestrates all services.
+  \item \textbf{GitHub (SW-8):} Version control and pull-request workflow.
+  \item \textbf{Jira (SW-9):} Task tracking and sprint management.
+  \item \textbf{TestRail (SW-10):} Test case management and report export.
+\end{itemize}
+
+\subsection{Communication Interfaces}
+\begin{itemize}
+  \item \textbf{HTTP/REST (COM-1):} Frontend communicates with the backend over HTTP on port
+    8000 using JSON payloads.
+  \item \textbf{WebSocket (COM-2):} Live rover telemetry is streamed to the frontend over a
+    WebSocket connection.
+  \item \textbf{File System Volume (COM-3):} The backend and ML worker share a mounted Docker
+    volume at \texttt{/app/storage} for large scan files and processed outputs.
+\end{itemize}
+
+% -----------------------------------------------------------------------
+\section{Functional Requirements}
+\label{sec:functional}
+% -----------------------------------------------------------------------
+
+\subsection{Snapshot 1 --- Baseline Requirements}
+
+\begin{longtable}{|p{0.8in}|p{5.4in}|}
+\hline
+\textbf{ID} & \textbf{Requirement} \\
+\hline
+FR-1 & The system shall accept LAS and PLY point-cloud files uploaded through the web UI. \\
+\hline
+FR-2 & The system shall convert uploaded point-cloud data into a 2D orthoimage and a
+  Digital Elevation Model (DEM) image. \\
+\hline
+FR-3 & The system shall run a pre-trained U-Net model on the orthoimage to produce a
+  binary segmentation mask identifying sidewalk joints and cracks. \\
+\hline
+FR-4 & The system shall calculate vertical displacement measurements by aligning the
+  segmentation mask with the DEM elevation values. \\
+\hline
+FR-5 & The system shall export displacement measurements and metadata as a CSV file. \\
+\hline
+FR-6 & The system shall store raw scan files, processed orthoimages, DEMs, masks, and
+  CSV exports in a designated storage volume. \\
+\hline
+FR-7 & The system shall display processed results in the Displacement Results dashboard
+  view. \\
+\hline
+FR-8 & The system shall maintain a processing job queue, showing status as pending,
+  running, completed, or failed. \\
+\hline
+\end{longtable}
+
+\subsection{Snapshot 2 --- Data Processing and Displacement Pipeline Requirements}
+
+\begin{longtable}{|p{0.8in}|p{5.4in}|}
+\hline
+\textbf{ID} & \textbf{Requirement} \\
+\hline
+FR-9 & The system shall parse LAS 1.2--1.4 and PLY point-cloud files using the Laspy
+  and Open3D libraries without loss of point attributes. \\
+\hline
+FR-10 & The system shall generate an orthoimage with a configurable ground sample distance
+  (GSD), defaulting to 1 mm per pixel. \\
+\hline
+FR-11 & The system shall generate a DEM image aligned to the orthoimage resolution and
+  coordinate frame. \\
+\hline
+FR-12 & The system shall validate that the orthoimage and DEM have matching dimensions and
+  coordinate extents before running segmentation; a mismatch shall produce a logged error
+  and halt the job. \\
+\hline
+FR-13 & The system shall apply noise removal and elevation smoothing (median filter,
+  configurable kernel size) to the DEM before displacement computation. \\
+\hline
+FR-14 & The system shall compute vertical displacement as the signed elevation difference
+  between adjacent sidewalk panel segments identified by the U-Net mask. \\
+\hline
+FR-15 & The system shall flag any sidewalk segment where vertical displacement exceeds
+  a configurable threshold (default: 0.5 inches / 12.7 mm) as requiring remediation. \\
+\hline
+FR-16 & The system shall document horizontal displacement methodology in the SDD and
+  SRS; full horizontal displacement calculation is deferred to a future release. \\
+\hline
+FR-17 & The system shall produce an annotated visualization image overlaying the
+  segmentation mask and displacement values on the orthoimage. \\
+\hline
+FR-18 & The system shall record processing start time, end time, and error messages for
+  each job in the PostgreSQL database. \\
+\hline
+FR-19 & The CSV export shall include columns: scan\_id, segment\_id, orthoimage\_path,
+  dem\_path, mask\_path, vertical\_displacement\_mm, flag\_remediation,
+  processed\_at. \\
+\hline
+FR-20 & The system shall validate model output confidence; if the U-Net produces an
+  average mask confidence below 0.6 for a scan, the result shall be logged as
+  low-confidence and highlighted in the dashboard. \\
+\hline
+\end{longtable}
+
+\subsection{Snapshot 3 --- Semi-Autonomous Navigation Requirements}
+
+\begin{longtable}{|p{0.8in}|p{5.4in}|}
+\hline
+\textbf{ID} & \textbf{Requirement} \\
+\hline
+FR-21 & The system shall accept a GPS waypoint list (latitude, longitude, optional label)
+  uploaded via the Rover Navigation UI or through a JSON file. \\
+\hline
+FR-22 & The system shall execute waypoints sequentially; the rover shall proceed to each
+  waypoint in the order specified and shall not skip waypoints unless a safety override
+  is triggered. \\
+\hline
+FR-23 & The system shall stop the rover automatically and alert the operator when the
+  rover's calculated path to the next waypoint is blocked by a detected obstacle. \\
+\hline
+FR-24 & The obstacle detection module shall process frames from the forward-facing camera
+  at a minimum of 5 frames per second during navigation. \\
+\hline
+FR-25 & The system shall provide a manual override control in the UI that immediately
+  suspends autonomous navigation and transfers control to operator joystick or directional
+  input. \\
+\hline
+FR-26 & The system shall execute a safe-stop procedure (immediate motor halt, alarm log
+  entry) if communication with the rover is lost for more than 3 consecutive seconds. \\
+\hline
+FR-27 & The system shall log telemetry at a minimum of 1 Hz during navigation, including:
+  timestamp, latitude, longitude, heading, speed, battery level, and obstacle status. \\
+\hline
+FR-28 & The Rover Navigation UI shall display the rover's live GPS position on a map
+  updated at least once per second. \\
+\hline
+FR-29 & The system shall display remaining battery level on the Rover Navigation UI and
+  shall alert the operator when battery falls below 20\%. \\
+\hline
+FR-30 & The system shall store all telemetry logs in the database and allow export as
+  CSV from the Test Logs UI. \\
+\hline
+\end{longtable}
+
+\subsection{Snapshot 4 --- Final Requirements (Completed and Deferred)}
+
+\begin{longtable}{|p{0.8in}|p{5.4in}|}
+\hline
+\textbf{ID} & \textbf{Requirement} \\
+\hline
+FR-31 & The system shall include a field testing report section in the reviewer dashboard
+  summarizing results from at least one real or simulated sidewalk test run. \\
+\hline
+FR-32 & The system shall provide a user manual accessible from the dashboard that
+  describes all features, file formats, Docker setup, and known limitations. \\
+\hline
+FR-33 & The system shall version all exported CSV and visualization files by scan ID
+  and processing timestamp so older results are not overwritten. \\
+\hline
+FR-34 & [DEFERRED] Full horizontal displacement calculation using paired scan alignment
+  is deferred to a future release pending additional LiDAR hardware calibration data. \\
+\hline
+FR-35 & [DEFERRED] Real-time on-rover inference (running U-Net on the Raspberry Pi)
+  is deferred; the current design processes scans on the workstation after upload. \\
+\hline
+FR-36 & [DEFERRED] Cloud processing integration (Azure Blob / S3) is planned but not
+  implemented in this simulation; local volume storage is used throughout. \\
+\hline
+\end{longtable}
+
+% -----------------------------------------------------------------------
+\section{Nonfunctional Requirements}
+\label{sec:nonfunctional}
+% -----------------------------------------------------------------------
+
+\subsection{Performance}
+\begin{itemize}
+  \item The system shall process a single sidewalk scan (up to 100 MB point-cloud file)
+    from upload through CSV export in under 5 minutes on the reference workstation
+    (8-core CPU, 16 GB RAM, no GPU).
+  \item The dashboard shall load within 3 seconds on a standard broadband connection.
+  \item The Rover Navigation UI shall update the live GPS position within 2 seconds of
+    receiving a telemetry packet.
+\end{itemize}
+
+\subsection{Safety}
+\begin{itemize}
+  \item The rover shall execute a safe-stop immediately upon loss of communication or
+    manual override trigger (FR-26, FR-25).
+  \item The system shall not command the rover to proceed through a flagged obstacle
+    zone without explicit operator confirmation.
+  \item Battery level alerts shall fire before the rover is stranded in the field
+    (FR-29).
+\end{itemize}
+
+\subsection{Security}
+\begin{itemize}
+  \item No credentials shall be hard-coded in source files; all secrets shall be
+    supplied via environment variables or Docker secrets.
+  \item The admin settings page (UI-7) shall be accessible only to authenticated users.
+  \item Field scan data containing images of pedestrians or private property shall be
+    stored in access-controlled storage and not exposed publicly.
+\end{itemize}
+
+\subsection{Reliability and Maintainability}
+\begin{itemize}
+  \item All processing jobs shall be retryable; a failed job shall log the error and
+    allow manual re-trigger without data loss.
+  \item The system shall pass all TestRail regression cases before any snapshot merge
+    into the main branch.
+  \item Code shall follow consistent formatting and be documented with inline comments
+    sufficient for a new developer to onboard within one day.
+\end{itemize}
+
+\subsection{Usability}
+\begin{itemize}
+  \item A BOE reviewer with no software background shall be able to access the
+    dashboard, view displacement results, and export a CSV without consulting the user
+    manual.
+  \item All error messages displayed in the UI shall be written in plain English and
+    shall suggest a corrective action.
+\end{itemize}
+
+\subsection{Portability}
+\begin{itemize}
+  \item The system shall run on any machine where Docker and docker-compose are
+    installed, regardless of the host operating system.
+  \item The processing scripts shall produce identical output on Windows (via WSL2),
+    macOS, and Linux.
+\end{itemize}
+
+% -----------------------------------------------------------------------
+\section{Database and Storage Requirements}
+% -----------------------------------------------------------------------
+
+\begin{itemize}
+  \item The PostgreSQL database shall store: scans, jobs, displacement\_records,
+    telemetry\_logs, and users tables.
+  \item Raw scan files shall be stored on the Docker volume at
+    \texttt{storage/raw/<scan\_id>/}.
+  \item Processed outputs (orthoimage, DEM, mask, CSV, visualization) shall be stored
+    at \texttt{storage/processed/<scan\_id>/}.
+  \item Model weights shall be stored at
+    \texttt{storage/models/unet\_model.h5}.
+  \item The database shall be backed up to a volume snapshot before each snapshot
+    submission.
+\end{itemize}
+
+% -----------------------------------------------------------------------
+\section{Legal and Ethical Considerations}
+\label{sec:legal}
+% -----------------------------------------------------------------------
+
+\begin{itemize}
+  \item \textbf{ADA Compliance:} The system exists to support identification of
+    sidewalk hazards that affect pedestrians with disabilities. Displacement
+    measurements and flagging thresholds shall align with ADA accessibility standards.
+  \item \textbf{Pedestrian Safety:} Rover operation in public spaces requires
+    operator supervision at all times. The system shall not operate in autonomous
+    mode without a qualified operator monitoring the live feed.
+  \item \textbf{Image and Data Privacy:} Field scans may inadvertently capture images
+    of pedestrians, vehicles, residential addresses, or license plates. All captured
+    data shall be treated as sensitive, stored in access-controlled volumes, and not
+    shared publicly or used for any purpose other than sidewalk assessment.
+  \item \textbf{Data Retention:} Scan data shall be retained only as long as needed
+    for engineering review and shall be deleted according to the LA City data
+    retention policy.
+  \item \textbf{Access Control:} Only authorized city engineering staff and project
+    team members shall have access to the storage volume and database.
+  \item \textbf{Open-Source Compliance:} All third-party libraries used in this
+    project (TensorFlow, Open3D, FastAPI, etc.) shall be used in compliance with
+    their respective open-source licenses.
+\end{itemize}
+
+% -----------------------------------------------------------------------
+\section{Glossary}
+\label{sec:glossary}
+% -----------------------------------------------------------------------
+
+\begin{longtable}{|p{1.5in}|p{5in}|}
+\hline
+\textbf{Term} & \textbf{Definition} \\
+\hline
+ADA & Americans with Disabilities Act. Federal law requiring accessible public
+  infrastructure. \\
+\hline
+BOE & Bureau of Engineering, LA City department responsible for sidewalk
+  assessment and remediation. \\
+\hline
+DEM & Digital Elevation Model. A raster image where pixel values represent
+  ground elevation at that location. \\
+\hline
+GSD & Ground Sample Distance. The real-world distance represented by one pixel
+  in the orthoimage. \\
+\hline
+LAS & A standardized binary file format for storing 3D point-cloud data from
+  LiDAR sensors. \\
+\hline
+LiDAR & Light Detection and Ranging. A remote sensing technology that uses laser
+  pulses to measure distance and generate 3D point clouds. \\
+\hline
+Orthoimage & A geometrically corrected aerial or top-down 2D image generated from a
+  3D point cloud, with uniform scale. \\
+\hline
+PLY & Polygon File Format. An alternative point-cloud file format that stores
+  geometry as a list of vertices and optionally faces. \\
+\hline
+ROS & Robot Operating System. A middleware framework providing libraries and tools
+  for writing robot software. \\
+\hline
+U-Net & A convolutional neural network architecture designed for image segmentation
+  tasks, used here to detect cracks and joints in sidewalk orthoimages. \\
+\hline
+Vertical Displacement & The signed elevation difference (in millimeters) between adjacent
+  sidewalk panel segments at a joint or crack. Values above the threshold indicate
+  a trip hazard. \\
+\hline
+Waypoint & A GPS coordinate (latitude and longitude) that the rover is instructed to
+  navigate to during semi-autonomous operation. \\
+\hline
+\end{longtable}
+
+% -----------------------------------------------------------------------
+\section{Future Work (Snapshot 4 Reflection)}
+% -----------------------------------------------------------------------
+
+The following features were identified during the simulation but were not implemented and are
+recommended for future development:
+
+\begin{itemize}
+  \item \textbf{Horizontal displacement calculation:} Research indicates that horizontal
+    misalignment of sidewalk panels is an additional ADA concern. A paired-scan alignment
+    method using ICP (Iterative Closest Point) is the recommended approach.
+  \item \textbf{On-rover real-time inference:} Running the U-Net model directly on a
+    Raspberry Pi 5 with a Neural Processing Unit (NPU) accelerator would eliminate the
+    upload step and allow immediate field flagging.
+  \item \textbf{Cloud storage and processing:} Migrating from local Docker volumes to
+    Azure Blob Storage and Azure ML would improve scalability for city-wide deployments.
+  \item \textbf{ROS2 migration:} The navigation module is designed around ROS Noetic
+    (end-of-life 2025). A future iteration should migrate to ROS2 Humble.
+  \item \textbf{YOLO-based rover centering:} A YOLO object detection model could center
+    the rover on the sidewalk centerline automatically, reducing operator intervention
+    during data collection.
+  \item \textbf{Field validation at additional sites:} Testing at a wider variety of
+    sidewalk materials, slopes, and urban density levels will improve model generalization.
+\end{itemize}
+
+\end{document}
