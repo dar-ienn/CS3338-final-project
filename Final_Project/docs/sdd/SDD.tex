@@ -328,6 +328,22 @@ Outputs:
 
 \section{Interfaces}
 
+\subsection{User Interfaces}
+
+The system provides a browser-based control and monitoring interface that allows rover operators and reviewers to interact with the simulated sidewalk assessment system. The interface supports scan review, report viewing, navigation monitoring, and project workflow management.
+
+\subsection{Hardware Interfaces}
+
+The system interfaces with rover hardware components including LiDAR-enabled mobile devices, GPS modules, obstacle detection sensors, and Raspberry Pi-based rover control hardware.
+
+\subsection{Software Interfaces}
+
+The system interfaces with software tools and services including TensorFlow/Keras, OpenCV, ROS or ROS Bridge, Docker services, GitHub, Jira, and TestRail.
+
+\subsection{Communication Interfaces}
+
+The system supports communication between rover hardware, processing workstations, storage systems, and development tools through simulated local network and cloud-based workflows.
+
 The system interfaces with rover hardware, LiDAR-enabled mobile devices, GPS systems, processing workstations, Docker services, and cloud or local storage systems.
 
 \section{Design Constraints}
@@ -335,6 +351,23 @@ The system interfaces with rover hardware, LiDAR-enabled mobile devices, GPS sys
 The system depends on LiDAR scan quality, point-cloud alignment accuracy, machine-learning model consistency, and compatible software dependencies such as TensorFlow, OpenCV, Laspy, and Open3D.
 
 \section{Testing and Verification Strategy}
+
+The system will be validated using a combination of manual testing, workflow verification, documentation review, and TestRail-generated reports.
+
+Testing activities include:
+
+\begin{itemize}
+    \item Verification that required repository files and folders exist
+    \item Validation of workflow diagram accuracy
+    \item Review of SRS and SDD consistency
+    \item Verification of point-cloud processing workflow documentation
+    \item Validation of U-Net segmentation input and output descriptions
+    \item Verification of displacement computation outputs and CSV report structure
+    \item Review of navigation safety requirements and telemetry logging
+    \item Validation of Docker configuration and dependency documentation
+\end{itemize}
+
+Testing evidence and exported reports will be maintained in the TestRail documentation folder throughout all project snapshots.
 
 The system will be validated using TestRail reports, manual testing, segmentation validation, displacement verification, and workflow testing.
 
