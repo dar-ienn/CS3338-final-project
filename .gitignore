@@ -1,0 +1,42 @@
+# macOS junk
+.DS_Store
+**/.DS_Store
+
+# LaTeX build artifacts
+*.aux
+*.log
+*.out
+*.toc
+*.synctex.gz
+*.fls
+*.fdb_latexmk
+*.lof
+*.lot
+*.bbl
+*.blg
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# Node
+node_modules/
+dist/
+.next/
+
+# IDE
+.vscode/
+.idea/
+
+# Storage of large binary scans (do not commit)
+Final_Project/storage/raw/*
+Final_Project/storage/processed/*
+Final_Project/storage/models/*
+
+# Lab leftovers we are intentionally keeping out of git
+Final_Project/src/logs/access.log
+Final_Project/src/logs/debug.log
+Final_Project/src/logs/error.log
