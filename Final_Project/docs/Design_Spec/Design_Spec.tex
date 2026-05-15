@@ -1,0 +1,165 @@
+\documentclass{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{longtable}
+\title{Design Specification\\LA City Sidewalk Assessment Simulation}
+\author{Erfan Mirzaee (Andrew's role)}
+\date{\today}
+\begin{document}
+\maketitle
+\tableofcontents
+\newpage
+
+\section{Purpose}
+This Design Spec explains every major page, tool, component, package, dependency, and Docker service for the simulated sidewalk assessment system.
+
+\section{Frontend Pages}
+\begin{itemize}
+  \item Dashboard — Overview of recent scans, processing status
+  \item Upload Scan — Interface to import LiDAR/point-cloud files
+  \item Scan Review — Viewer for raw scan data and orthoimage outputs
+  \item Displacement Results — Display processed displacement CSV and visualizations
+  \item Rover Navigation — Manual control and waypoint management UI
+  \item Test Logs — View TestRail reports and manual test evidence
+  \item Admin Settings — User/role management, model versioning
+\end{itemize}
+
+\section{Backend Modules}
+\begin{itemize}
+  \item File Upload Service — Accept and store raw scan files (LAS/PLY/IMG)
+  \item Job Queue Manager — Track processing jobs and status
+  \item Results API — Serve processed CSV, images, and metadata
+  \item User/Auth Service — Simple role-based access (optional for simulation)
+  \item Telemetry Logger — Store rover navigation events and GPS traces
+\end{itemize}
+
+\section{ML and Data Processing Modules}
+\begin{itemize}
+  \item Point Cloud Importer — Read LAS/PLY using Laspy or Open3D
+  \item Orthoimage/DEM Generator — Convert point cloud to 2D raster outputs
+  \item U-Net Segmentation — TensorFlow/Keras model to identify cracks/joints
+  \item Displacement Calculator — Measure vertical and horizontal displacement
+  \item CSV Exporter — Format results for BOE review
+\end{itemize}
+
+\section{Navigation Modules}
+\begin{itemize}
+  \item GPS Waypoint Manager — Queue and sequence navigation targets
+  \item Obstacle Detection Service — Simulated or real-time detection
+  \item Manual Override Handler — User intervention logic
+  \item Safe Stop Module — Emergency halt and telemetry snapshot
+  \item Telemetry Logger — Record position, battery, events
+\end{itemize}
+
+\section{Database and Storage Design}
+\begin{itemize}
+  \item Metadata DB: PostgreSQL storing scan info, job history, test results
+  \item File Storage: Local volume or object store (S3/Azure) for raw/processed files
+  \item Model Storage: Versioned U-Net weights at \texttt{/app/storage/models/unet\_model.h5}
+\end{itemize}
+
+\section{Dependencies and Libraries}
+\subsection{Python 3.10}
+\subsection{Backend Stack}
+\begin{itemize}
+  \item FastAPI or Flask for REST API
+  \item python-multipart for file uploads
+  \item psycopg2 for PostgreSQL
+  \item python-dotenv for environment config
+\end{itemize}
+
+\subsection{Data Processing Stack}
+\begin{itemize}
+  \item numpy — numerical arrays
+  \item pandas — data frames and CSV handling
+  \item opencv-python-headless — image processing
+  \item pillow — image I/O
+  \item matplotlib — visualization
+  \item scipy — advanced math operations
+  \item laspy — read/write LAS files
+  \item open3d — point cloud manipulation
+\end{itemize}
+
+\subsection{ML Stack}
+\begin{itemize}
+  \item tensorflow 2.x — deep learning framework
+  \item keras — high-level neural network API (bundled with TF)
+  \item scikit-learn — preprocessing and metrics
+\end{itemize}
+
+\subsection{Frontend}
+\begin{itemize}
+  \item Node.js 20 LTS
+  \item React 18+ — UI framework
+  \item Vite — build tool
+  \item Tailwind CSS or Material UI — styling
+\end{itemize}
+
+\section{Docker Services}
+\subsection{frontend}
+\begin{itemize}
+  \item Base image: \texttt{node:20-alpine}
+  \item Runs Vite dev server on port 5173
+  \item Mounts source code for live reload
+\end{itemize}
+
+\subsection{backend}
+\begin{itemize}
+  \item Base image: \texttt{python:3.10-slim}
+  \item Runs FastAPI/Uvicorn on port 8000
+  \item Environment variables: \texttt{DATABASE\_URL}, \texttt{STORAGE\_PATH}
+  \item Depends on: db service
+\end{itemize}
+
+\subsection{ml-worker}
+\begin{itemize}
+  \item Base image: \texttt{python:3.10-slim}
+  \item Runs background ML processing
+  \item Mounts shared storage for models and outputs
+  \item Watches job queue and processes scans
+\end{itemize}
+
+\subsection{db}
+\begin{itemize}
+  \item Base image: \texttt{postgres:16}
+  \item Database name: sidewalk
+  \item User/pass: sidewalk/sidewalk
+  \item Persists data in named volume db-data
+\end{itemize}
+
+\section{Input and Output File Formats}
+\subsection{Inputs}
+\begin{itemize}
+  \item LAS/PLY: Point cloud format with XYZ + intensity
+  \item IMG: Orthoimage (GeoTIFF or similar)
+  \item CSV: Waypoint lists (lat, lon, heading, speed)
+\end{itemize}
+
+\subsection{Outputs}
+\begin{itemize}
+  \item Orthoimage: GeoTIFF or PNG at ground resolution
+  \item DEM: Elevation raster image
+  \item Segmentation Mask: Binary or multi-class PNG
+  \item Displacement CSV: Fields = location, vertical\_mm, horizontal\_mm, confidence
+  \item Telemetry JSON: GPS trace, events, timestamps
+\end{itemize}
+
+\section{Failure Handling}
+\begin{itemize}
+  \item LiDAR scan import failure: Log error, notify user, mark job as failed
+  \item DEM/orthoimage mismatch: Resample or reject misaligned outputs
+  \item Missing Docker dependency: Build fails with clear error message
+  \item GPS waypoint drift: Log deviation, trigger re-centering or manual override
+  \item Obstacle detection false positive: Require manual confirmation before stopping
+  \item Safe stop: Halt rover, log telemetry snapshot, await operator reset
+\end{itemize}
+
+\section{Security and Access Assumptions}
+\begin{itemize}
+  \item This is a simulated system for CS 3338 coursework
+  \item No authentication required (optional role/login for extensibility)
+  \item Field data (images with pedestrians, addresses) not used in simulation
+  \item Docker network is local only; no external exposure expected
+  \item Future: Implement OAuth2 or JWT for production rover field deployment
+\end{itemize}
+
+\end{document}
