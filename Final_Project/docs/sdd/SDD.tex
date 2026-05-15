@@ -58,6 +58,43 @@ Outputs:
 
 \subsection{Point-Cloud Processing Module}
 
+\textbf{Purpose:}
+
+The Point-Cloud Processing Module converts raw point-cloud scan data into orthoimages and DEM/elevation images that can be used by the machine-learning and displacement systems.
+
+\textbf{Inputs:}
+
+\begin{itemize}
+    \item LAS point-cloud files
+    \item PLY point-cloud files
+\end{itemize}
+
+\textbf{Outputs:}
+
+\begin{itemize}
+    \item Orthoimages
+    \item DEM/elevation images
+    \item Processed scan data
+\end{itemize}
+
+\textbf{Dependencies:}
+
+\begin{itemize}
+    \item PointCloud2OrthoImage processing tools
+    \item Open3D
+    \item Laspy
+    \item NumPy
+\end{itemize}
+
+\textbf{Failure Cases:}
+
+\begin{itemize}
+    \item Corrupted point-cloud file
+    \item Misaligned DEM/elevation output
+    \item Excessive scan noise
+    \item Unsupported file format
+\end{itemize}
+
 Purpose: Convert raw point-cloud data into orthoimages and DEM/elevation images.
 
 Inputs:
@@ -73,6 +110,42 @@ Outputs:
 
 \subsection{U-Net Segmentation Module}
 
+\textbf{Purpose:}
+
+The U-Net Segmentation Module identifies sidewalk joints, cracks, and slab boundaries from orthoimages. The segmentation output is used by the displacement module to determine where sidewalk measurements should be calculated.
+
+\textbf{Inputs:}
+
+\begin{itemize}
+    \item Orthoimages generated from point-cloud data
+    \item Trained U-Net model weights
+\end{itemize}
+
+\textbf{Outputs:}
+
+\begin{itemize}
+    \item Binary segmentation masks
+    \item Predicted crack and joint locations
+\end{itemize}
+
+\textbf{Dependencies:}
+
+\begin{itemize}
+    \item Python
+    \item TensorFlow/Keras
+    \item OpenCV
+    \item NumPy
+\end{itemize}
+
+\textbf{Failure Cases:}
+
+\begin{itemize}
+    \item Model fails to detect small cracks or slab joints
+    \item False positive crack detections
+    \item Input image resolution does not match expected model format
+    \item Segmentation mask does not align with DEM/elevation image
+\end{itemize}
+
 Purpose: Detect sidewalk joints and cracks using image segmentation.
 
 Inputs:
@@ -86,6 +159,45 @@ Outputs:
 \end{itemize}
 
 \subsection{Displacement Computation Module}
+
+\textbf{Purpose:}
+
+The Displacement Computation Module calculates sidewalk displacement values using the DEM/elevation image and the segmentation mask produced by the U-Net module. This module represents the main measurement step of the system.
+
+\textbf{Inputs:}
+
+\begin{itemize}
+    \item DEM/elevation images
+    \item Segmentation masks
+    \item Scan metadata
+\end{itemize}
+
+\textbf{Outputs:}
+
+\begin{itemize}
+    \item CSV files containing displacement measurements
+    \item Visualization images showing detected sidewalk defects
+    \item Measurement summaries for review
+\end{itemize}
+
+\textbf{Dependencies:}
+
+\begin{itemize}
+    \item Python
+    \item NumPy
+    \item Pandas
+    \item SciPy
+    \item Matplotlib
+\end{itemize}
+
+\textbf{Failure Cases:}
+
+\begin{itemize}
+    \item DEM/elevation image and segmentation mask do not align
+    \item Missing left or right slab edge data
+    \item Displacement value is unrealistic due to noisy scan data
+    \item Output CSV file is incomplete or incorrectly formatted
+\end{itemize}
 
 Purpose: Calculate sidewalk displacement measurements from segmentation and elevation data.
 
@@ -103,6 +215,46 @@ Outputs:
 
 \subsection{Semi-Autonomous Navigation Module}
 
+\textbf{Purpose:}
+
+The Semi-Autonomous Navigation Module simulates rover navigation features such as GPS waypoint navigation, obstacle detection, telemetry logging, and manual override controls. This module represents a planned future expansion of the system.
+
+\textbf{Inputs:}
+
+\begin{itemize}
+    \item GPS waypoint coordinates
+    \item Obstacle detection events
+    \item Manual operator commands
+    \item Telemetry and battery data
+\end{itemize}
+
+\textbf{Outputs:}
+
+\begin{itemize}
+    \item Navigation commands
+    \item Telemetry logs
+    \item Safe-stop events
+    \item Navigation status updates
+\end{itemize}
+
+\textbf{Dependencies:}
+
+\begin{itemize}
+    \item ROS or ROS Bridge
+    \item GPS parsing libraries
+    \item Obstacle detection sensors
+    \item Telemetry logging services
+\end{itemize}
+
+\textbf{Failure Cases:}
+
+\begin{itemize}
+    \item GPS waypoint drift
+    \item Rover loses communication with operator
+    \item False obstacle detection event
+    \item Telemetry logging interruption
+\end{itemize}
+
 Purpose: Simulate GPS waypoint navigation and obstacle detection workflows.
 
 Inputs:
@@ -118,6 +270,47 @@ Outputs:
 \end{itemize}
 
 \subsection{Storage and Reporting Module}
+
+\textbf{Purpose:}
+
+The Storage and Reporting Module stores raw and processed system outputs and generates reports for project reviewers, QA testers, and BOE stakeholders.
+
+\textbf{Inputs:}
+
+\begin{itemize}
+    \item Raw scan data
+    \item Processed orthoimages and DEM outputs
+    \item Segmentation masks
+    \item Displacement CSV files
+    \item Telemetry and log data
+\end{itemize}
+
+\textbf{Outputs:}
+
+\begin{itemize}
+    \item Stored project files
+    \item Exported reports
+    \item Reviewer-accessible outputs
+    \item Archived logs and evidence
+\end{itemize}
+
+\textbf{Dependencies:}
+
+\begin{itemize}
+    \item Local project storage
+    \item PostgreSQL or storage database
+    \item Docker storage volumes
+    \item GitHub repository
+\end{itemize}
+
+\textbf{Failure Cases:}
+
+\begin{itemize}
+    \item Missing or corrupted stored files
+    \item Storage permission issues
+    \item Incorrect report export formatting
+    \item Missing metadata or logs
+\end{itemize}
 
 Purpose: Store processed data and generate reports for reviewers.
 
