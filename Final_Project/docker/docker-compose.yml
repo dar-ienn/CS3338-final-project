@@ -1,0 +1,84 @@
+version: "3.9"
+
+services:
+  frontend:
+    build:
+      context: ../src/frontend
+      dockerfile: Dockerfile
+    container_name: sidewalk-frontend
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+    environment:
+      - VITE_API_URL=http://localhost:8000
+    volumes:
+      - ../src/frontend:/app
+    networks:
+      - sidewalk-network
+
+  backend:
+    build:
+      context: ../src/backend
+      dockerfile: Dockerfile
+    container_name: sidewalk-backend
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    environment:
+      - DATABASE_URL=postgresql://sidewalk:sidewalk@db:5432/sidewalk
+      - STORAGE_PATH=/app/storage
+      - PYTHONUNBUFFERED=1
+    volumes:
+      - ../storage:/app/storage
+      - ../src/backend:/app
+    networks:
+      - sidewalk-network
+
+  ml-worker:
+    build:
+      context: ../src/ml_pipeline
+      dockerfile: Dockerfile
+    container_name: sidewalk-ml-worker
+    depends_on:
+      - backend
+      - db
+    environment:
+      - MODEL_PATH=/app/storage/models/unet_model.h5
+      - STORAGE_PATH=/app/storage
+      - DATABASE_URL=postgresql://sidewalk:sidewalk@db:5432/sidewalk
+      - PYTHONUNBUFFERED=1
+    volumes:
+      - ../storage:/app/storage
+      - ../src/ml_pipeline:/app
+    networks:
+      - sidewalk-network
+
+  db:
+    image: postgres:16-alpine
+    container_name: sidewalk-db
+    environment:
+      - POSTGRES_USER=sidewalk
+      - POSTGRES_PASSWORD=sidewalk
+      - POSTGRES_DB=sidewalk
+      - POSTGRES_INITDB_ARGS=-c max_connections=200
+    ports:
+      - "5432:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    networks:
+      - sidewalk-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sidewalk"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  db-data:
+    driver: local
+
+networks:
+  sidewalk-network:
+    driver: bridge
