@@ -1,1 +1,39 @@
-# User Manual
+\documentclass{article}
+\usepackage[margin=1in]{geometry}
+\title{README / User Manual\\LA City Sidewalk Assessment Simulation}
+\author{Darien Amador}
+\date{\today}
+\begin{document}
+\maketitle
+
+\section{Jira Link}
+https://cs3338-group-5.atlassian.net/jira/software/projects/CSLDGS/boards/67
+
+\section{Project Objective}
+This project simulates the software development timeline for a sidewalk assessment rover system that helps identify unsafe or ADA non-compliant sidewalk segments.
+
+\section{Why This Software Matters}
+The system supports safer sidewalks by organizing data collection, image processing, displacement measurement, testing, and review workflows.
+
+\section{How to Download}
+\begin{verbatim}
+git clone https://github.com/YOUR-ORG/cs3338-la-sidewalk-assessment-simulation.git
+cd cs3338-la-sidewalk-assessment-simulation
+\end{verbatim}
+
+\section{How to Run With Docker}
+\begin{verbatim}
+cd docker
+docker compose config
+docker compose build
+docker compose up
+\end{verbatim}
+
+\section{How to View Outputs}
+Processed sample outputs are stored in tests/sample_outputs and storage/processed.
+
+\section{Folder Map}
+\section{Known Limitations}
+\section{Team Roles}
+
+\end{document}
