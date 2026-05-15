@@ -1,0 +1,392 @@
+\documentclass{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{longtable}
+
+\title{Software Design Document (SDD)\\LA City Sidewalk Assessment Simulation}
+\author{Elijah Rodriguez}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+\newpage
+
+\section{Revision History}
+
+\begin{longtable}{|p{1.5in}|p{1in}|p{2.5in}|p{1in}|}
+\hline
+Name & Date & Reason for Change & Version \\ \hline
+Elijah Rodriguez & ADD_DATE & Initial Snapshot 1 SDD draft & 1.0 \\ \hline
+\end{longtable}
+
+\section{Introduction}
+
+\subsection{Purpose}
+
+This Software Design Document (SDD) describes the architecture and internal system design for the LA City Sidewalk Assessment simulation project. The system is designed to support rover-based sidewalk inspection using LiDAR and point-cloud processing workflows.
+
+\subsection{System Overview}
+
+The system collects sidewalk scan data, processes LiDAR point clouds into orthoimages and elevation maps, uses a U-Net machine-learning model to identify sidewalk joints and cracks, calculates displacement measurements, and exports results for review.
+
+\section{System Architecture}
+
+The high-level system pipeline is:
+
+Rover or iPhone LiDAR Scan $\rightarrow$ Raw Point Cloud $\rightarrow$ PointCloud2OrthoImage $\rightarrow$ Orthoimage and DEM/Elevation Image $\rightarrow$ U-Net Segmentation $\rightarrow$ Displacement Computation $\rightarrow$ CSV and Visualization Output $\rightarrow$ Reviewer Dashboard
+
+\section{Module Breakdown}
+
+\subsection{Data Acquisition Module}
+
+Purpose: Collect sidewalk scan data using rover-mounted sensors and LiDAR-enabled devices.
+
+Inputs:
+\begin{itemize}
+    \item LiDAR scans
+    \item GPS data
+    \item Sensor telemetry
+\end{itemize}
+
+Outputs:
+\begin{itemize}
+    \item Raw point-cloud files
+    \item Scan metadata
+\end{itemize}
+
+\subsection{Point-Cloud Processing Module}
+
+\textbf{Purpose:}
+
+The Point-Cloud Processing Module converts raw point-cloud scan data into orthoimages and DEM/elevation images that can be used by the machine-learning and displacement systems.
+
+\textbf{Inputs:}
+
+\begin{itemize}
+    \item LAS point-cloud files
+    \item PLY point-cloud files
+\end{itemize}
+
+\textbf{Outputs:}
+
+\begin{itemize}
+    \item Orthoimages
+    \item DEM/elevation images
+    \item Processed scan data
+\end{itemize}
+
+\textbf{Dependencies:}
+
+\begin{itemize}
+    \item PointCloud2OrthoImage processing tools
+    \item Open3D
+    \item Laspy
+    \item NumPy
+\end{itemize}
+
+\textbf{Failure Cases:}
+
+\begin{itemize}
+    \item Corrupted point-cloud file
+    \item Misaligned DEM/elevation output
+    \item Excessive scan noise
+    \item Unsupported file format
+\end{itemize}
+
+Purpose: Convert raw point-cloud data into orthoimages and DEM/elevation images.
+
+Inputs:
+\begin{itemize}
+    \item LAS or PLY point-cloud files
+\end{itemize}
+
+Outputs:
+\begin{itemize}
+    \item Orthoimages
+    \item DEM/elevation maps
+\end{itemize}
+
+\subsection{U-Net Segmentation Module}
+
+\textbf{Purpose:}
+
+The U-Net Segmentation Module identifies sidewalk joints, cracks, and slab boundaries from orthoimages. The segmentation output is used by the displacement module to determine where sidewalk measurements should be calculated.
+
+\textbf{Inputs:}
+
+\begin{itemize}
+    \item Orthoimages generated from point-cloud data
+    \item Trained U-Net model weights
+\end{itemize}
+
+\textbf{Outputs:}
+
+\begin{itemize}
+    \item Binary segmentation masks
+    \item Predicted crack and joint locations
+\end{itemize}
+
+\textbf{Dependencies:}
+
+\begin{itemize}
+    \item Python
+    \item TensorFlow/Keras
+    \item OpenCV
+    \item NumPy
+\end{itemize}
+
+\textbf{Failure Cases:}
+
+\begin{itemize}
+    \item Model fails to detect small cracks or slab joints
+    \item False positive crack detections
+    \item Input image resolution does not match expected model format
+    \item Segmentation mask does not align with DEM/elevation image
+\end{itemize}
+
+Purpose: Detect sidewalk joints and cracks using image segmentation.
+
+Inputs:
+\begin{itemize}
+    \item Orthoimages
+\end{itemize}
+
+Outputs:
+\begin{itemize}
+    \item Segmentation masks
+\end{itemize}
+
+\subsection{Displacement Computation Module}
+
+\textbf{Purpose:}
+
+The Displacement Computation Module calculates sidewalk displacement values using the DEM/elevation image and the segmentation mask produced by the U-Net module. This module represents the main measurement step of the system.
+
+\textbf{Inputs:}
+
+\begin{itemize}
+    \item DEM/elevation images
+    \item Segmentation masks
+    \item Scan metadata
+\end{itemize}
+
+\textbf{Outputs:}
+
+\begin{itemize}
+    \item CSV files containing displacement measurements
+    \item Visualization images showing detected sidewalk defects
+    \item Measurement summaries for review
+\end{itemize}
+
+\textbf{Dependencies:}
+
+\begin{itemize}
+    \item Python
+    \item NumPy
+    \item Pandas
+    \item SciPy
+    \item Matplotlib
+\end{itemize}
+
+\textbf{Failure Cases:}
+
+\begin{itemize}
+    \item DEM/elevation image and segmentation mask do not align
+    \item Missing left or right slab edge data
+    \item Displacement value is unrealistic due to noisy scan data
+    \item Output CSV file is incomplete or incorrectly formatted
+\end{itemize}
+
+Purpose: Calculate sidewalk displacement measurements from segmentation and elevation data.
+
+Inputs:
+\begin{itemize}
+    \item DEM/elevation images
+    \item Segmentation masks
+\end{itemize}
+
+Outputs:
+\begin{itemize}
+    \item CSV reports
+    \item Visualization outputs
+\end{itemize}
+
+\subsection{Semi-Autonomous Navigation Module}
+
+\textbf{Purpose:}
+
+The Semi-Autonomous Navigation Module simulates rover navigation features such as GPS waypoint navigation, obstacle detection, telemetry logging, and manual override controls. This module represents a planned future expansion of the system.
+
+\textbf{Inputs:}
+
+\begin{itemize}
+    \item GPS waypoint coordinates
+    \item Obstacle detection events
+    \item Manual operator commands
+    \item Telemetry and battery data
+\end{itemize}
+
+\textbf{Outputs:}
+
+\begin{itemize}
+    \item Navigation commands
+    \item Telemetry logs
+    \item Safe-stop events
+    \item Navigation status updates
+\end{itemize}
+
+\textbf{Dependencies:}
+
+\begin{itemize}
+    \item ROS or ROS Bridge
+    \item GPS parsing libraries
+    \item Obstacle detection sensors
+    \item Telemetry logging services
+\end{itemize}
+
+\textbf{Failure Cases:}
+
+\begin{itemize}
+    \item GPS waypoint drift
+    \item Rover loses communication with operator
+    \item False obstacle detection event
+    \item Telemetry logging interruption
+\end{itemize}
+
+Purpose: Simulate GPS waypoint navigation and obstacle detection workflows.
+
+Inputs:
+\begin{itemize}
+    \item GPS waypoints
+    \item Obstacle detection events
+\end{itemize}
+
+Outputs:
+\begin{itemize}
+    \item Navigation commands
+    \item Telemetry logs
+\end{itemize}
+
+\subsection{Storage and Reporting Module}
+
+\textbf{Purpose:}
+
+The Storage and Reporting Module stores raw and processed system outputs and generates reports for project reviewers, QA testers, and BOE stakeholders.
+
+\textbf{Inputs:}
+
+\begin{itemize}
+    \item Raw scan data
+    \item Processed orthoimages and DEM outputs
+    \item Segmentation masks
+    \item Displacement CSV files
+    \item Telemetry and log data
+\end{itemize}
+
+\textbf{Outputs:}
+
+\begin{itemize}
+    \item Stored project files
+    \item Exported reports
+    \item Reviewer-accessible outputs
+    \item Archived logs and evidence
+\end{itemize}
+
+\textbf{Dependencies:}
+
+\begin{itemize}
+    \item Local project storage
+    \item PostgreSQL or storage database
+    \item Docker storage volumes
+    \item GitHub repository
+\end{itemize}
+
+\textbf{Failure Cases:}
+
+\begin{itemize}
+    \item Missing or corrupted stored files
+    \item Storage permission issues
+    \item Incorrect report export formatting
+    \item Missing metadata or logs
+\end{itemize}
+
+Purpose: Store processed data and generate reports for reviewers.
+
+Inputs:
+\begin{itemize}
+    \item Processed outputs
+    \item Logs and metadata
+\end{itemize}
+
+Outputs:
+\begin{itemize}
+    \item Reports
+    \item Saved files
+\end{itemize}
+
+\section{Interfaces}
+
+\subsection{User Interfaces}
+
+The system provides a browser-based control and monitoring interface that allows rover operators and reviewers to interact with the simulated sidewalk assessment system. The interface supports scan review, report viewing, navigation monitoring, and project workflow management.
+
+\subsection{Hardware Interfaces}
+
+The system interfaces with rover hardware components including LiDAR-enabled mobile devices, GPS modules, obstacle detection sensors, and Raspberry Pi-based rover control hardware.
+
+\subsection{Software Interfaces}
+
+The system interfaces with software tools and services including TensorFlow/Keras, OpenCV, ROS or ROS Bridge, Docker services, GitHub, Jira, and TestRail.
+
+\subsection{Communication Interfaces}
+
+The system supports communication between rover hardware, processing workstations, storage systems, and development tools through simulated local network and cloud-based workflows.
+
+The system interfaces with rover hardware, LiDAR-enabled mobile devices, GPS systems, processing workstations, Docker services, and cloud or local storage systems.
+
+\section{Design Constraints}
+
+The system depends on LiDAR scan quality, point-cloud alignment accuracy, machine-learning model consistency, and compatible software dependencies such as TensorFlow, OpenCV, Laspy, and Open3D.
+
+\section{Testing and Verification Strategy}
+
+The system will be validated using a combination of manual testing, workflow verification, documentation review, and TestRail-generated reports.
+
+Testing activities include:
+
+\begin{itemize}
+    \item Verification that required repository files and folders exist
+    \item Validation of workflow diagram accuracy
+    \item Review of SRS and SDD consistency
+    \item Verification of point-cloud processing workflow documentation
+    \item Validation of U-Net segmentation input and output descriptions
+    \item Verification of displacement computation outputs and CSV report structure
+    \item Review of navigation safety requirements and telemetry logging
+    \item Validation of Docker configuration and dependency documentation
+\end{itemize}
+
+Testing evidence and exported reports will be maintained in the TestRail documentation folder throughout all project snapshots.
+
+The system will be validated using TestRail reports, manual testing, segmentation validation, displacement verification, and workflow testing.
+
+\section{Glossary}
+
+\begin{itemize}
+    \item ADA: Americans with Disabilities Act
+    \item LiDAR: Light Detection and Ranging
+    \item U-Net: Deep learning segmentation model
+    \item DEM: Digital Elevation Model
+\end{itemize}
+
+\section{References}
+
+\begin{itemize}
+    \item LA City Sidewalk Assessment Project Materials
+    \item TensorFlow Documentation
+    \item OpenCV Documentation
+    \item ROS Documentation
+\end{itemize}
+
+\end{document}
