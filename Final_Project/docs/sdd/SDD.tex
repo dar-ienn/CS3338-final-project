@@ -21,17 +21,18 @@ Name & Date & Reason for Change & Version \\ \hline
 Elijah Rodriguez & 2025-01-15 & Initial Snapshot 1 SDD draft & 1.0 \\ \hline
 Elijah Rodriguez & 2025-04-10 & Snapshot 2 update for data processing and displacement pipeline & 1.1 \\ \hline
 Elijah Rodriguez & 2025-07-08 & Snapshot 3 update for navigation architecture & 1.2 \\ \hline
+Elijah Rodriguez & 2025-10-20 & Final SDD revision, workflow updates, and future work & 1.3 \\ \hline
 \end{longtable}
 
 \section{Introduction}
 
 \subsection{Purpose}
 
-This Software Design Document (SDD) describes the architecture and internal system design for the LA City Sidewalk Assessment simulation project. The system is designed to support rover-based sidewalk inspection using LiDAR and point-cloud processing workflows.
+This Software Design Document (SDD) describes the architecture and internal system design for the LA City Sidewalk Assessment simulation project. The system is designed to support rover-based sidewalk inspection using LiDAR, point-cloud processing, machine-learning segmentation, displacement computation, navigation planning, and reporting workflows.
 
 \subsection{System Overview}
 
-The system collects sidewalk scan data, processes LiDAR point clouds into orthoimages and elevation maps, uses a U-Net machine-learning model to identify sidewalk joints and cracks, calculates displacement measurements, and exports results for review.
+The system collects sidewalk scan data, processes LiDAR point clouds into orthoimages and elevation maps, uses a U-Net machine-learning model to identify sidewalk joints and cracks, calculates displacement measurements, supports simulated semi-autonomous rover navigation, and exports results for review.
 
 \section{System Architecture}
 
@@ -56,8 +57,6 @@ The updated Snapshot 2 workflow is:
     \item Export CSV reports and visualization outputs
 \end{itemize}
 
-The Snapshot 2 workflow improves the system by organizing the full processing pipeline into modular stages that can be validated independently during testing.
-
 \subsection{Snapshot 3 Navigation Workflow}
 
 Snapshot 3 expands the architecture by introducing simulated semi-autonomous navigation features for rover movement and obstacle management.
@@ -72,8 +71,6 @@ The updated navigation workflow includes:
     \item Manual override controls
     \item Safe-stop behavior during navigation failures
 \end{itemize}
-
-The Snapshot 3 navigation architecture separates rover movement systems from the displacement-analysis workflow while still allowing telemetry and navigation logs to be stored alongside scan data.
 
 \section{Module Breakdown}
 
@@ -155,21 +152,6 @@ The Point-Cloud Processing Module converts raw point-cloud scan data into orthoi
     \item Unsupported file format
 \end{itemize}
 
-\textbf{Snapshot 2 Processing Additions:}
-
-Snapshot 2 introduces a more detailed point-cloud processing workflow for displacement analysis.
-
-The processing pipeline includes:
-
-\begin{itemize}
-    \item Point-cloud import and validation
-    \item Alignment of sidewalk scans to a normalized coordinate system
-    \item Noise reduction and filtering
-    \item DEM/elevation image generation
-    \item Orthoimage generation
-    \item Output validation for downstream U-Net processing
-\end{itemize}
-
 \subsection{U-Net Segmentation Module}
 
 \textbf{Purpose:}
@@ -206,20 +188,6 @@ The U-Net Segmentation Module identifies sidewalk joints, cracks, and slab bound
     \item False positive crack detections
     \item Input image resolution does not match expected model format
     \item Segmentation mask does not align with DEM/elevation image
-\end{itemize}
-
-\textbf{Snapshot 2 Segmentation Additions:}
-
-Snapshot 2 improves the integration between the U-Net segmentation system and the displacement-analysis workflow.
-
-The updated segmentation workflow includes:
-
-\begin{itemize}
-    \item Validation of orthoimage input dimensions
-    \item Processing of normalized orthoimages
-    \item Generation of binary segmentation masks
-    \item Alignment verification between masks and DEM/elevation images
-    \item Export of segmentation outputs for displacement analysis
 \end{itemize}
 
 \subsection{Displacement Computation Module}
@@ -263,26 +231,11 @@ The Displacement Computation Module calculates sidewalk displacement values usin
     \item Output CSV file is incomplete or incorrectly formatted
 \end{itemize}
 
-\textbf{Snapshot 2 Displacement Additions:}
-
-Snapshot 2 expands the displacement-analysis workflow by improving the relationship between segmentation masks and DEM/elevation data.
-
-The updated displacement workflow includes:
-
-\begin{itemize}
-    \item Validation of DEM/elevation image alignment
-    \item Detection of sidewalk slab boundaries
-    \item Extraction of elevation differences across detected joints
-    \item Calculation of vertical displacement measurements
-    \item Export of CSV displacement reports
-    \item Generation of visualization outputs for reviewers
-\end{itemize}
-
 \subsection{Semi-Autonomous Navigation Module}
 
 \textbf{Purpose:}
 
-The Semi-Autonomous Navigation Module simulates rover navigation features such as GPS waypoint navigation, obstacle detection, telemetry logging, manual override controls, and safe-stop behavior. Snapshot 3 focuses on expanding the navigation architecture and documenting how navigation systems interact with the rover workflow.
+The Semi-Autonomous Navigation Module simulates rover navigation features such as GPS waypoint navigation, obstacle detection, telemetry logging, manual override controls, and safe-stop behavior.
 
 \textbf{Inputs:}
 
@@ -323,24 +276,6 @@ The Semi-Autonomous Navigation Module simulates rover navigation features such a
     \item Telemetry logging interruption
     \item Rover navigation path becomes blocked
 \end{itemize}
-
-\textbf{Snapshot 3 Navigation Additions:}
-
-Snapshot 3 expands the system architecture by introducing simulated semi-autonomous navigation support. The navigation workflow allows the rover to process waypoint-based movement instructions while monitoring for obstacles and maintaining telemetry logs.
-
-The updated Snapshot 3 navigation workflow includes:
-
-\begin{itemize}
-    \item GPS waypoint queue management
-    \item Sequential waypoint execution
-    \item Obstacle detection and avoidance events
-    \item Manual override support
-    \item Safe-stop behavior when navigation issues occur
-    \item Telemetry logging and battery monitoring
-    \item Navigation status reporting
-\end{itemize}
-
-The Snapshot 3 navigation architecture is designed to separate navigation processing from the displacement-analysis workflow while still allowing telemetry and scan data to be stored together for reviewer analysis.
 
 \subsection{Storage and Reporting Module}
 
@@ -407,6 +342,20 @@ The system supports communication between rover hardware, processing workstation
 
 The system depends on LiDAR scan quality, point-cloud alignment accuracy, machine-learning model consistency, and compatible software dependencies such as TensorFlow, OpenCV, Laspy, and Open3D.
 
+\subsection{Final Snapshot Constraints and Limitations}
+
+At the final snapshot, the system remains a simulated software engineering project rather than a fully deployed rover system. The design assumes that hardware integration, field testing, and model validation would continue in future development cycles.
+
+Known limitations include:
+
+\begin{itemize}
+    \item Real rover hardware is not fully implemented in this simulation
+    \item U-Net training and inference are documented but not fully deployed
+    \item Semi-autonomous navigation is modeled at the architecture level
+    \item Field testing is represented through planned workflows and test documentation
+    \item Docker support represents the expected service layout rather than a complete production deployment
+\end{itemize}
+
 \section{Testing and Verification Strategy}
 
 The system will be validated using a combination of manual testing, workflow verification, documentation review, and TestRail-generated reports.
@@ -426,6 +375,22 @@ Testing activities include:
 
 Testing evidence and exported reports will be maintained in the TestRail documentation folder throughout all project snapshots.
 
+\section{Future Work}
+
+Future development could expand the system beyond the simulated CS3338 project scope by improving hardware integration, automation, and deployment readiness.
+
+Potential future work includes:
+
+\begin{itemize}
+    \item Migrating rover middleware from ROS to ROS2
+    \item Adding cloud-based processing for point-cloud and ML workflows
+    \item Improving LiDAR hardware for more consistent field data
+    \item Adding YOLO-based obstacle detection or sidewalk-centering support
+    \item Supporting real-time rover inference and field feedback
+    \item Improving horizontal displacement detection
+    \item Building a more complete reviewer dashboard for BOE stakeholders
+\end{itemize}
+
 \section{Glossary}
 
 \begin{itemize}
@@ -433,6 +398,8 @@ Testing evidence and exported reports will be maintained in the TestRail documen
     \item LiDAR: Light Detection and Ranging
     \item U-Net: Deep learning segmentation model
     \item DEM: Digital Elevation Model
+    \item ROS: Robot Operating System
+    \item GPS: Global Positioning System
 \end{itemize}
 
 \section{References}
