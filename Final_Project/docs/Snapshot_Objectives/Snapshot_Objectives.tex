@@ -5,6 +5,7 @@
 \usepackage{hyperref}
 \usepackage{titlesec}
 \usepackage{xcolor}
+\usepackage{amssymb}
 
 \hypersetup{
   colorlinks=true,
@@ -18,7 +19,7 @@
 \author{
 Group 5 \\
 Erfan Mirzaee (Project Manager) \\
-James Barron, Elijah Rodriguez, Andrew, Darien Amador
+James Barron, Elijah Rodriguez, Andrew Banagas, Darien Amador
 }
 
 \date{\today}
@@ -29,9 +30,7 @@ James Barron, Elijah Rodriguez, Andrew, Darien Amador
 \tableofcontents
 \newpage
 
-%==========================================================
 \section{Document Control}
-%==========================================================
 
 \subsection{Revision History}
 
@@ -65,15 +64,15 @@ The simulation is divided into four snapshots of approximately three simulated m
   \item \texttt{docs/srs/SRS.tex}
   \item \texttt{docs/sdd/SDD.tex}
   \item \texttt{docs/readme\_user\_manual/README\_User\_Manual.tex}
+  \item \texttt{docs/design\_spec/Design\_Spec.tex}
   \item \texttt{docs/workflow/Workflow\_Diagram.png}
+  \item \texttt{docs/workflow/Workflow\_Diagram.drawio}
   \item \texttt{docs/testrail/*.pdf}
   \item \texttt{docker/docker-compose.yml}
-  \item \texttt{admin/} (risk register and meeting notes)
+  \item \texttt{admin/} for project administration files, if needed
 \end{itemize}
 
-%==========================================================
 \section{Snapshot 1 -- Project Foundation}
-%==========================================================
 
 \textit{Simulated Months 1--3}
 
@@ -110,9 +109,7 @@ Deferred: Advanced navigation architecture and detailed displacement validation 
 
 Lessons learned: Early repository organization and document standardization significantly reduced merge conflicts and formatting inconsistencies.
 
-%==========================================================
 \section{Snapshot 2 -- Data Processing and Displacement Pipeline}
-%==========================================================
 
 \textit{Simulated Months 4--6}
 
@@ -147,9 +144,7 @@ Risks that materialized: Point-cloud alignment and dependency consistency were i
 
 Risks retired: Repository structure and workflow planning issues were resolved during Snapshot 2.
 
-%==========================================================
 \section{Snapshot 3 -- Semi-Autonomous Navigation}
-%==========================================================
 
 \textit{Simulated Months 7--9}
 
@@ -183,9 +178,7 @@ What we cut: Full autonomous path-planning implementation was deferred to future
 
 Cross-feature impact: Navigation requirements required updates to the SRS, SDD, workflow diagram, and Design Spec.
 
-%==========================================================
 \section{Snapshot 4 -- Final Submission and Future Work}
-%==========================================================
 
 \textit{Simulated Months 10--12}
 
@@ -243,9 +236,7 @@ Finalize all documentation, complete final testing and workflow cleanup, and pre
   \item Real-time field inference support
 \end{itemize}
 
-%==========================================================
 \section{Pre-Submission Audit Checklist}
-%==========================================================
 
 \begin{itemize}[leftmargin=*]
   \item[$\checkmark$] Root \texttt{README.md} explains the project and links required documents
