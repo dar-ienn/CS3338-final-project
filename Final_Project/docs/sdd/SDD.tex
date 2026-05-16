@@ -20,6 +20,7 @@
 Name & Date & Reason for Change & Version \\ \hline
 Elijah Rodriguez & 2025-01-15 & Initial Snapshot 1 SDD draft & 1.0 \\ \hline
 Elijah Rodriguez & 2025-04-10 & Snapshot 2 update for data processing and displacement pipeline & 1.1 \\ \hline
+Elijah Rodriguez & 2025-07-08 & Snapshot 3 update for navigation architecture & 1.2 \\ \hline
 \end{longtable}
 
 \section{Introduction}
@@ -56,6 +57,23 @@ The updated Snapshot 2 workflow is:
 \end{itemize}
 
 The Snapshot 2 workflow improves the system by organizing the full processing pipeline into modular stages that can be validated independently during testing.
+
+\subsection{Snapshot 3 Navigation Workflow}
+
+Snapshot 3 expands the architecture by introducing simulated semi-autonomous navigation features for rover movement and obstacle management.
+
+The updated navigation workflow includes:
+
+\begin{itemize}
+    \item GPS waypoint queue processing
+    \item Sequential waypoint navigation
+    \item Obstacle detection and avoidance
+    \item Telemetry and battery monitoring
+    \item Manual override controls
+    \item Safe-stop behavior during navigation failures
+\end{itemize}
+
+The Snapshot 3 navigation architecture separates rover movement systems from the displacement-analysis workflow while still allowing telemetry and navigation logs to be stored alongside scan data.
 
 \section{Module Breakdown}
 
@@ -264,7 +282,7 @@ The updated displacement workflow includes:
 
 \textbf{Purpose:}
 
-The Semi-Autonomous Navigation Module simulates rover navigation features such as GPS waypoint navigation, obstacle detection, telemetry logging, and manual override controls.
+The Semi-Autonomous Navigation Module simulates rover navigation features such as GPS waypoint navigation, obstacle detection, telemetry logging, manual override controls, and safe-stop behavior. Snapshot 3 focuses on expanding the navigation architecture and documenting how navigation systems interact with the rover workflow.
 
 \textbf{Inputs:}
 
@@ -273,6 +291,7 @@ The Semi-Autonomous Navigation Module simulates rover navigation features such a
     \item Obstacle detection events
     \item Manual operator commands
     \item Telemetry and battery data
+    \item Rover movement status
 \end{itemize}
 
 \textbf{Outputs:}
@@ -282,6 +301,7 @@ The Semi-Autonomous Navigation Module simulates rover navigation features such a
     \item Telemetry logs
     \item Safe-stop events
     \item Navigation status updates
+    \item Waypoint progress updates
 \end{itemize}
 
 \textbf{Dependencies:}
@@ -291,6 +311,7 @@ The Semi-Autonomous Navigation Module simulates rover navigation features such a
     \item GPS parsing libraries
     \item Obstacle detection sensors
     \item Telemetry logging services
+    \item Rover control hardware
 \end{itemize}
 
 \textbf{Failure Cases:}
@@ -300,7 +321,26 @@ The Semi-Autonomous Navigation Module simulates rover navigation features such a
     \item Rover loses communication with operator
     \item False obstacle detection event
     \item Telemetry logging interruption
+    \item Rover navigation path becomes blocked
 \end{itemize}
+
+\textbf{Snapshot 3 Navigation Additions:}
+
+Snapshot 3 expands the system architecture by introducing simulated semi-autonomous navigation support. The navigation workflow allows the rover to process waypoint-based movement instructions while monitoring for obstacles and maintaining telemetry logs.
+
+The updated Snapshot 3 navigation workflow includes:
+
+\begin{itemize}
+    \item GPS waypoint queue management
+    \item Sequential waypoint execution
+    \item Obstacle detection and avoidance events
+    \item Manual override support
+    \item Safe-stop behavior when navigation issues occur
+    \item Telemetry logging and battery monitoring
+    \item Navigation status reporting
+\end{itemize}
+
+The Snapshot 3 navigation architecture is designed to separate navigation processing from the displacement-analysis workflow while still allowing telemetry and scan data to be stored together for reviewer analysis.
 
 \subsection{Storage and Reporting Module}
 
