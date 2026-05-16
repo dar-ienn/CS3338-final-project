@@ -18,7 +18,8 @@
 \begin{longtable}{|p{1.5in}|p{1in}|p{2.5in}|p{1in}|}
 \hline
 Name & Date & Reason for Change & Version \\ \hline
-Elijah Rodriguez & ADD_DATE & Initial Snapshot 1 SDD draft & 1.0 \\ \hline
+Elijah Rodriguez & 2025-01-15 & Initial Snapshot 1 SDD draft & 1.0 \\ \hline
+Elijah Rodriguez & 2025-04-10 & Snapshot 2 update for data processing and displacement pipeline & 1.1 \\ \hline
 \end{longtable}
 
 \section{Introduction}
@@ -37,23 +38,64 @@ The high-level system pipeline is:
 
 Rover or iPhone LiDAR Scan $\rightarrow$ Raw Point Cloud $\rightarrow$ PointCloud2OrthoImage $\rightarrow$ Orthoimage and DEM/Elevation Image $\rightarrow$ U-Net Segmentation $\rightarrow$ Displacement Computation $\rightarrow$ CSV and Visualization Output $\rightarrow$ Reviewer Dashboard
 
+\subsection{Snapshot 2 Data Processing Pipeline}
+
+Snapshot 2 expands the system architecture by focusing on the data-processing and displacement-analysis workflow. The system processes LiDAR point-cloud scans into orthoimages and DEM/elevation images that are later used for segmentation and displacement calculation.
+
+The updated Snapshot 2 workflow is:
+
+\begin{itemize}
+    \item Import raw LAS or PLY point-cloud files
+    \item Align and normalize point-cloud data
+    \item Generate orthoimages and DEM/elevation maps
+    \item Process orthoimages using the U-Net segmentation model
+    \item Generate segmentation masks identifying sidewalk joints and cracks
+    \item Combine segmentation masks with DEM/elevation data
+    \item Calculate vertical displacement measurements
+    \item Export CSV reports and visualization outputs
+\end{itemize}
+
+The Snapshot 2 workflow improves the system by organizing the full processing pipeline into modular stages that can be validated independently during testing.
+
 \section{Module Breakdown}
 
 \subsection{Data Acquisition Module}
 
-Purpose: Collect sidewalk scan data using rover-mounted sensors and LiDAR-enabled devices.
+\textbf{Purpose:}
 
-Inputs:
+The Data Acquisition Module is responsible for collecting sidewalk scan data using rover-mounted sensors, LiDAR-enabled devices, and GPS systems during field operations.
+
+\textbf{Inputs:}
+
 \begin{itemize}
     \item LiDAR scans
-    \item GPS data
+    \item GPS coordinates
     \item Sensor telemetry
+    \item User scan commands
 \end{itemize}
 
-Outputs:
+\textbf{Outputs:}
+
 \begin{itemize}
     \item Raw point-cloud files
     \item Scan metadata
+    \item Timestamped field data
+\end{itemize}
+
+\textbf{Dependencies:}
+
+\begin{itemize}
+    \item LiDAR-enabled iPhone or scanning device
+    \item Rover hardware
+    \item GPS module
+\end{itemize}
+
+\textbf{Failure Cases:}
+
+\begin{itemize}
+    \item Incomplete or corrupted scan
+    \item Missing GPS data
+    \item Unstable sensor readings
 \end{itemize}
 
 \subsection{Point-Cloud Processing Module}
@@ -95,24 +137,26 @@ The Point-Cloud Processing Module converts raw point-cloud scan data into orthoi
     \item Unsupported file format
 \end{itemize}
 
-Purpose: Convert raw point-cloud data into orthoimages and DEM/elevation images.
+\textbf{Snapshot 2 Processing Additions:}
 
-Inputs:
-\begin{itemize}
-    \item LAS or PLY point-cloud files
-\end{itemize}
+Snapshot 2 introduces a more detailed point-cloud processing workflow for displacement analysis.
 
-Outputs:
+The processing pipeline includes:
+
 \begin{itemize}
-    \item Orthoimages
-    \item DEM/elevation maps
+    \item Point-cloud import and validation
+    \item Alignment of sidewalk scans to a normalized coordinate system
+    \item Noise reduction and filtering
+    \item DEM/elevation image generation
+    \item Orthoimage generation
+    \item Output validation for downstream U-Net processing
 \end{itemize}
 
 \subsection{U-Net Segmentation Module}
 
 \textbf{Purpose:}
 
-The U-Net Segmentation Module identifies sidewalk joints, cracks, and slab boundaries from orthoimages. The segmentation output is used by the displacement module to determine where sidewalk measurements should be calculated.
+The U-Net Segmentation Module identifies sidewalk joints, cracks, and slab boundaries from orthoimages.
 
 \textbf{Inputs:}
 
@@ -146,23 +190,25 @@ The U-Net Segmentation Module identifies sidewalk joints, cracks, and slab bound
     \item Segmentation mask does not align with DEM/elevation image
 \end{itemize}
 
-Purpose: Detect sidewalk joints and cracks using image segmentation.
+\textbf{Snapshot 2 Segmentation Additions:}
 
-Inputs:
-\begin{itemize}
-    \item Orthoimages
-\end{itemize}
+Snapshot 2 improves the integration between the U-Net segmentation system and the displacement-analysis workflow.
 
-Outputs:
+The updated segmentation workflow includes:
+
 \begin{itemize}
-    \item Segmentation masks
+    \item Validation of orthoimage input dimensions
+    \item Processing of normalized orthoimages
+    \item Generation of binary segmentation masks
+    \item Alignment verification between masks and DEM/elevation images
+    \item Export of segmentation outputs for displacement analysis
 \end{itemize}
 
 \subsection{Displacement Computation Module}
 
 \textbf{Purpose:}
 
-The Displacement Computation Module calculates sidewalk displacement values using the DEM/elevation image and the segmentation mask produced by the U-Net module. This module represents the main measurement step of the system.
+The Displacement Computation Module calculates sidewalk displacement values using the DEM/elevation image and the segmentation mask produced by the U-Net module.
 
 \textbf{Inputs:}
 
@@ -199,25 +245,26 @@ The Displacement Computation Module calculates sidewalk displacement values usin
     \item Output CSV file is incomplete or incorrectly formatted
 \end{itemize}
 
-Purpose: Calculate sidewalk displacement measurements from segmentation and elevation data.
+\textbf{Snapshot 2 Displacement Additions:}
 
-Inputs:
-\begin{itemize}
-    \item DEM/elevation images
-    \item Segmentation masks
-\end{itemize}
+Snapshot 2 expands the displacement-analysis workflow by improving the relationship between segmentation masks and DEM/elevation data.
 
-Outputs:
+The updated displacement workflow includes:
+
 \begin{itemize}
-    \item CSV reports
-    \item Visualization outputs
+    \item Validation of DEM/elevation image alignment
+    \item Detection of sidewalk slab boundaries
+    \item Extraction of elevation differences across detected joints
+    \item Calculation of vertical displacement measurements
+    \item Export of CSV displacement reports
+    \item Generation of visualization outputs for reviewers
 \end{itemize}
 
 \subsection{Semi-Autonomous Navigation Module}
 
 \textbf{Purpose:}
 
-The Semi-Autonomous Navigation Module simulates rover navigation features such as GPS waypoint navigation, obstacle detection, telemetry logging, and manual override controls. This module represents a planned future expansion of the system.
+The Semi-Autonomous Navigation Module simulates rover navigation features such as GPS waypoint navigation, obstacle detection, telemetry logging, and manual override controls.
 
 \textbf{Inputs:}
 
@@ -253,20 +300,6 @@ The Semi-Autonomous Navigation Module simulates rover navigation features such a
     \item Rover loses communication with operator
     \item False obstacle detection event
     \item Telemetry logging interruption
-\end{itemize}
-
-Purpose: Simulate GPS waypoint navigation and obstacle detection workflows.
-
-Inputs:
-\begin{itemize}
-    \item GPS waypoints
-    \item Obstacle detection events
-\end{itemize}
-
-Outputs:
-\begin{itemize}
-    \item Navigation commands
-    \item Telemetry logs
 \end{itemize}
 
 \subsection{Storage and Reporting Module}
@@ -312,25 +345,11 @@ The Storage and Reporting Module stores raw and processed system outputs and gen
     \item Missing metadata or logs
 \end{itemize}
 
-Purpose: Store processed data and generate reports for reviewers.
-
-Inputs:
-\begin{itemize}
-    \item Processed outputs
-    \item Logs and metadata
-\end{itemize}
-
-Outputs:
-\begin{itemize}
-    \item Reports
-    \item Saved files
-\end{itemize}
-
 \section{Interfaces}
 
 \subsection{User Interfaces}
 
-The system provides a browser-based control and monitoring interface that allows rover operators and reviewers to interact with the simulated sidewalk assessment system. The interface supports scan review, report viewing, navigation monitoring, and project workflow management.
+The system provides a browser-based control and monitoring interface that allows rover operators and reviewers to interact with the simulated sidewalk assessment system.
 
 \subsection{Hardware Interfaces}
 
@@ -338,13 +357,11 @@ The system interfaces with rover hardware components including LiDAR-enabled mob
 
 \subsection{Software Interfaces}
 
-The system interfaces with software tools and services including TensorFlow/Keras, OpenCV, ROS or ROS Bridge, Docker services, GitHub, Jira, and TestRail.
+The system interfaces with TensorFlow/Keras, OpenCV, ROS or ROS Bridge, Docker services, GitHub, Jira, and TestRail.
 
 \subsection{Communication Interfaces}
 
 The system supports communication between rover hardware, processing workstations, storage systems, and development tools through simulated local network and cloud-based workflows.
-
-The system interfaces with rover hardware, LiDAR-enabled mobile devices, GPS systems, processing workstations, Docker services, and cloud or local storage systems.
 
 \section{Design Constraints}
 
@@ -368,8 +385,6 @@ Testing activities include:
 \end{itemize}
 
 Testing evidence and exported reports will be maintained in the TestRail documentation folder throughout all project snapshots.
-
-The system will be validated using TestRail reports, manual testing, segmentation validation, displacement verification, and workflow testing.
 
 \section{Glossary}
 
