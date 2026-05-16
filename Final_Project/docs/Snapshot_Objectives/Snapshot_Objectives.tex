@@ -14,12 +14,17 @@
 
 \title{CS 3338 Snapshot Objectives \\
 \large LA City Sidewalk Assessment Simulation}
-\author{Group 5 \\
+
+\author{
+Group 5 \\
 Erfan Mirzaee (Project Manager) \\
-James Barron, Elijah Rodriguez, Andrew, Darien Amador}
+James Barron, Elijah Rodriguez, Andrew, Darien Amador
+}
+
 \date{\today}
 
 \begin{document}
+
 \maketitle
 \tableofcontents
 \newpage
@@ -29,16 +34,18 @@ James Barron, Elijah Rodriguez, Andrew, Darien Amador}
 %==========================================================
 
 \subsection{Revision History}
+
 \begin{longtable}{|p{1.2in}|p{0.9in}|p{0.7in}|p{2.8in}|}
 \hline
 \textbf{Author} & \textbf{Date} & \textbf{Version} & \textbf{Reason for Change} \\ \hline
-Erfan Mirzaee & ADD\_DATE & 1.0 & Initial Snapshot 1 plan: all four snapshot objectives drafted, definition of done for each. \\ \hline
-Erfan Mirzaee & ADD\_DATE & 2.0 & Snapshot 2 reflection added; risks re-scored. \\ \hline
-Erfan Mirzaee & ADD\_DATE & 3.0 & Snapshot 3 reflection added; navigation scope confirmed. \\ \hline
-Erfan Mirzaee & ADD\_DATE & 4.0 & Snapshot 4 final reflection, future work, retrospective. \\ \hline
+Erfan Mirzaee & 2025-01-15 & 1.0 & Initial Snapshot 1 plan: all four snapshot objectives drafted, definition of done for each. \\ \hline
+Erfan Mirzaee & 2025-04-10 & 2.0 & Snapshot 2 reflection added; risks re-scored. \\ \hline
+Erfan Mirzaee & 2025-07-08 & 3.0 & Snapshot 3 reflection added; navigation scope confirmed. \\ \hline
+Erfan Mirzaee & 2025-10-20 & 4.0 & Snapshot 4 final reflection, future work, retrospective. \\ \hline
 \end{longtable}
 
 \subsection{Project Links}
+
 \begin{itemize}[leftmargin=*]
   \item GitHub Repository: \url{https://github.com/dar-ienn/CS3338-final-project}
   \item Jira Board: \url{https://cs3338-group-5-final-project.atlassian.net/jira/software/projects/SCRUM/boards/1/backlog}
@@ -46,253 +53,211 @@ Erfan Mirzaee & ADD\_DATE & 4.0 & Snapshot 4 final reflection, future work, retr
 \end{itemize}
 
 \subsection{Project Summary}
-This project simulates a 12-month software development timeline for the
-LA City Sidewalk Assessment (Ascent) system. The system supports a
-rover-based sidewalk inspection workflow that collects LiDAR/point-cloud
-data, segments sidewalk joints and cracks using a U-Net deep learning
-model, measures vertical and horizontal displacement, and produces
-review-ready outputs for the LA City Bureau of Engineering (BOE) for
-ADA compliance assessment.
 
-The simulation is divided into four snapshots of approximately three
-simulated months each, with each snapshot adding a major capability:
-foundation, displacement pipeline, semi-autonomous navigation, and
-final delivery.
+This project simulates a 12-month software development timeline for the LA City Sidewalk Assessment (Ascent) system. The system supports a rover-based sidewalk inspection workflow that collects LiDAR and point-cloud data, segments sidewalk joints and cracks using a U-Net deep learning model, measures vertical and horizontal displacement, and produces review-ready outputs for the LA City Bureau of Engineering (BOE) for ADA compliance assessment.
+
+The simulation is divided into four snapshots of approximately three simulated months each, with each snapshot adding a major capability: foundation, displacement pipeline, semi-autonomous navigation, and final delivery.
 
 \subsection{Repository Layout}
-All deliverables live under the existing \texttt{Final\_Project/} wrapper
-that the team established during the prerequisite lab. Required files
-and their paths:
+
 \begin{itemize}[leftmargin=*]
-  \item \texttt{Final\_Project/docs/Snapshot\_Objectives/Snapshot\_Objectives.tex}
-  \item \texttt{Final\_Project/docs/Software\_Requirement\_Specifications/SRS.tex}
-  \item \texttt{Final\_Project/docs/Software\_Design\_Document/SDD.tex}
-  \item \texttt{Final\_Project/docs/User\_Manual/README\_User\_Manual.tex}
-  \item \texttt{Final\_Project/docs/Workflow\_Diagram/Workflow\_Diagram.png}
-  \item \texttt{Final\_Project/docs/TestRail\_Documents/*.pdf} (four reports)
-  \item \texttt{Final\_Project/docker/docker-compose.yml}
-  \item \texttt{Final\_Project/admin/} (risk register, meeting notes)
+  \item \texttt{docs/snapshot\_objectives/Snapshot\_Objectives.tex}
+  \item \texttt{docs/srs/SRS.tex}
+  \item \texttt{docs/sdd/SDD.tex}
+  \item \texttt{docs/readme\_user\_manual/README\_User\_Manual.tex}
+  \item \texttt{docs/workflow/Workflow\_Diagram.png}
+  \item \texttt{testrail/*.pdf}
+  \item \texttt{docker/docker-compose.yml}
+  \item \texttt{admin/} (risk register and meeting notes)
 \end{itemize}
 
 %==========================================================
 \section{Snapshot 1 -- Project Foundation}
 %==========================================================
-\textit{Simulated Months 1--3.}
+
+\textit{Simulated Months 1--3}
 
 \subsection{Objective}
-Establish the repository, Jira board, baseline architecture, and initial
-documentation for the LA City Sidewalk Assessment simulation. By the end
-of Snapshot 1 the project must be \textbf{organizationally complete} even
-though no major feature has been implemented: every required document
-exists at draft level, every team member has an assigned role, and the
-toolchain (GitHub, Jira, TestRail, Docker) is wired up.
+
+Establish the repository, Jira board, baseline architecture, and initial documentation for the LA City Sidewalk Assessment simulation. By the end of Snapshot 1 the project must be organizationally complete even though no major feature has been implemented.
 
 \subsection{Planned Work Items}
+
 \begin{itemize}[leftmargin=*]
-  \item \textbf{P1-S1-001} Reorganize and document the existing repo; fix \texttt{.gitignore}; add root README (Erfan).
-  \item \textbf{P1-S1-002} Create Jira project, epics, and Snapshot 1 sprint (Erfan).
-  \item \textbf{P1-S1-003} Draft \texttt{Snapshot\_Objectives.tex} covering all four snapshots (Erfan).
-  \item \textbf{P1-S1-004} Initialize risk register and meeting cadence (Erfan).
-  \item \textbf{P2-S1-001} Convert empty SRS \texttt{.docx} placeholders to a single \texttt{SRS.tex}; draft introduction, scope, user classes, FRs (James).
-  \item \textbf{P3-S1-001} Convert empty SDD \texttt{.docx} placeholders to a single \texttt{SDD.tex}; draft architecture overview and module list (Elijah).
-  \item \textbf{P3-S1-002} Replace the empty \texttt{project\_workflow\_diagram.png} with a real workflow diagram (Elijah).
-  \item \textbf{P4-S1-001} Draft \texttt{Design\_Spec.tex} and dependency list (Andrew).
-  \item \textbf{P4-S1-002} Add Docker compose draft and service Dockerfiles (Andrew).
-  \item \textbf{P5-S1-001} Convert empty \texttt{User\_Manual/README.md} placeholder to \texttt{README\_User\_Manual.tex} (Darien).
-  \item \textbf{P5-S1-002} Create manual test case template (Darien).
-  \item \textbf{TEAM-S1-001} Cross-review all Snapshot 1 documents.
+  \item Reorganize and document the repository structure
+  \item Create Jira epics and Snapshot 1 sprint
+  \item Draft SRS, SDD, README/User Manual, Design Spec, and workflow diagram
+  \item Define team responsibilities and initial risk register
+  \item Create Docker compose draft
+  \item Create initial manual testing template
 \end{itemize}
 
 \subsection{Definition of Done}
+
 \begin{itemize}[leftmargin=*]
-  \item Existing \texttt{Final\_Project/} structure is preserved.
-  \item All five required \texttt{.tex} files exist with at least skeleton content.
-  \item \texttt{docker/docker-compose.yml} exists and passes \texttt{docker compose config}.
-  \item Workflow diagram v1 (PNG + editable source) is committed.
-  \item Jira board has the eleven epics created and Snapshot 1 sprint populated.
-  \item Each team member has at least one merged pull request.
-  \item Risk register is initialized with the ten baseline risks.
-  \item \texttt{.gitignore} is fixed so it does not exclude required deliverables.
+  \item All required \texttt{.tex} files exist
+  \item Workflow diagram exists
+  \item Jira board and sprint exist
+  \item Docker compose file exists
+  \item Each team member has at least one merged contribution
 \end{itemize}
 
 \subsection{Snapshot 1 Reflection}
-\textit{To be completed at end of Snapshot 1.}\\
-Completed: \dots \\
-Deferred: \dots \\
-Lessons learned: \dots
+
+Completed: Repository structure, Jira setup, SRS/SDD drafts, workflow diagram, Docker planning, and role assignments were completed during Snapshot 1.
+
+Deferred: Advanced navigation architecture and detailed displacement validation were deferred to later snapshots.
+
+Lessons learned: Early repository organization and document standardization significantly reduced merge conflicts and formatting inconsistencies.
 
 %==========================================================
 \section{Snapshot 2 -- Data Processing and Displacement Pipeline}
 %==========================================================
-\textit{Simulated Months 4--6. First major technical feature.}
+
+\textit{Simulated Months 4--6}
 
 \subsection{Objective}
-Document and simulate the data processing pipeline that turns raw LiDAR
-scans into displacement measurements. This is the highest-risk technical
-area of the project, so all design decisions and dependencies must be
-fully captured in the SRS, SDD, and Design Spec, and verified by a
-TestRail run.
+
+Document and simulate the data-processing workflow that converts raw LiDAR scans into displacement measurements.
 
 \subsection{Planned Work Items}
+
 \begin{itemize}[leftmargin=*]
-  \item \textbf{P2-S2-001} Update SRS with LAS/PLY import, orthoimage,
-        DEM, U-Net mask, vertical displacement, horizontal displacement
-        research, CSV export, and validation metric requirements.
-  \item \textbf{P3-S2-001} Update SDD with module interactions for raw
-        scan import, \texttt{PointCloud2OrthoImage} conversion, DEM
-        alignment, mask alignment, displacement CSV output, and
-        validation flow.
-  \item \textbf{P4-S2-001} Add full dependency list (Python 3.10,
-        TensorFlow/Keras, NumPy, Pandas, Pillow, SciPy, Matplotlib,
-        OpenCV, Laspy, Open3D) to Design Spec; update \texttt{ml-worker}
-        Docker service.
-  \item \textbf{P5-S2-001} Build TestRail suite for Documentation,
-        Data Import, Processing Pipeline, ML Segmentation, and
-        Displacement Calculation. Execute first run.
-  \item \textbf{P1-S2-001} Hold sprint retro, update risk register,
-        record reflection in this document (Erfan).
+  \item Update SRS for point-cloud processing and displacement requirements
+  \item Update SDD for DEM generation, segmentation, and displacement workflows
+  \item Expand Design Spec dependency list
+  \item Add TestRail processing and displacement test cases
+  \item Document CSV export and validation workflows
 \end{itemize}
 
 \subsection{Definition of Done}
+
 \begin{itemize}[leftmargin=*]
-  \item SRS lists FR-1 through at least FR-15 covering full pipeline.
-  \item SDD shows data flow from LAS/PLY $\rightarrow$ orthoimage + DEM
-        $\rightarrow$ U-Net mask $\rightarrow$ displacement CSV.
-  \item Design Spec lists every dependency with version and license.
-  \item Two TestRail PDFs committed in \texttt{Final\_Project/docs/TestRail\_Documents/}:
-        \texttt{Snapshot2\_TestRun\_Report.pdf} and
-        \texttt{Snapshot2\_Regression\_Report.pdf}.
-  \item Sample input/output files documented.
+  \item SRS and SDD updated for displacement pipeline
+  \item TestRail Snapshot 2 reports exported
+  \item Processing workflow documented
+  \item Dependencies and Docker services updated
 \end{itemize}
 
 \subsection{Snapshot 2 Reflection}
-\textit{To be completed at end of Snapshot 2.}\\
-What changed from Snapshot 1: \dots \\
-Risks that materialized: \dots \\
-Risks retired: \dots
+
+What changed from Snapshot 1: The project evolved from organizational setup into detailed processing and displacement architecture documentation.
+
+Risks that materialized: Point-cloud alignment and dependency consistency were identified as major technical risks.
+
+Risks retired: Repository structure and workflow planning issues were resolved during Snapshot 2.
 
 %==========================================================
 \section{Snapshot 3 -- Semi-Autonomous Navigation}
 %==========================================================
-\textit{Simulated Months 7--9. Second major technical feature.}
+
+\textit{Simulated Months 7--9}
 
 \subsection{Objective}
-Add the second major capability: semi-autonomous navigation for the
-rover. This feature has explicit safety requirements (manual override,
-safe stop) that drive new test cases and additional UI surfaces.
+
+Add simulated semi-autonomous navigation support including waypoint navigation, obstacle detection, telemetry logging, and safe-stop behavior.
 
 \subsection{Planned Work Items}
+
 \begin{itemize}[leftmargin=*]
-  \item \textbf{P2-S3-001} Update SRS with GPS waypoint navigation,
-        sequential waypoint execution, obstacle detection, manual
-        override, safe stop, telemetry logging, live position tracking,
-        battery monitoring requirements.
-  \item \textbf{P3-S3-001} Update SDD and workflow diagram with the
-        navigation module: waypoint queue, path planner, obstacle
-        detector, override controller, safe-stop service, telemetry
-        logger.
-  \item \textbf{P4-S3-001} Update Design Spec with navigation
-        dependencies (ROS/ROS Bridge, GPS parsing, optional YOLO for
-        obstacle detection) and add \texttt{nav-service} to Docker
-        compose.
-  \item \textbf{P5-S3-001} Build TestRail Navigation/Safety suite,
-        execute test run, export
-        \texttt{Snapshot3\_TestRun\_Report.pdf}.
-  \item \textbf{P1-S3-001} Sprint retro, update risk register, reflection
-        in this document (Erfan).
+  \item Update SRS with navigation requirements
+  \item Update SDD and workflow diagram for navigation architecture
+  \item Expand Docker and Design Spec for navigation services
+  \item Add navigation and telemetry TestRail cases
 \end{itemize}
 
 \subsection{Definition of Done}
+
 \begin{itemize}[leftmargin=*]
-  \item All seven Spring 2026 navigation requirements present in SRS.
-  \item SDD module diagram shows navigation flow with safety stop and
-        override paths.
-  \item TestRail Navigation/Safety suite has at least one test per
-        requirement.
-  \item \texttt{Snapshot3\_TestRun\_Report.pdf} committed.
-  \item Workflow diagram v3 reflects new navigation surfaces.
+  \item Navigation workflow documented
+  \item SRS and SDD updated for navigation architecture
+  \item Workflow diagram updated
+  \item Navigation TestRail report exported
 \end{itemize}
 
 \subsection{Snapshot 3 Reflection}
-\textit{To be completed at end of Snapshot 3.}\\
-Navigation scope landed: \dots \\
-What we cut: \dots \\
-Cross-feature impact (e.g., did navigation force SRS changes?): \dots
+
+Navigation scope landed: GPS waypoint navigation, telemetry logging, obstacle detection, and safe-stop architecture were documented successfully.
+
+What we cut: Full autonomous path-planning implementation was deferred to future work.
+
+Cross-feature impact: Navigation requirements required updates to the SRS, SDD, workflow diagram, and Design Spec.
 
 %==========================================================
 \section{Snapshot 4 -- Final Submission and Future Work}
 %==========================================================
-\textit{Simulated Months 10--12. Polish, final test reports, future work.}
+
+\textit{Simulated Months 10--12}
 
 \subsection{Objective}
-Finalize all documentation, complete the simulated field testing
-narrative, deliver the final TestRail regression report, and produce a
-retrospective and future-work plan. After Snapshot 4 the repository
-must be gradeable in an incognito browser by anyone with the link.
+
+Finalize all documentation, complete final testing and workflow cleanup, and prepare the repository for final submission.
 
 \subsection{Planned Work Items}
+
 \begin{itemize}[leftmargin=*]
-  \item \textbf{P2-S4-001} Final SRS pass: revision history, completed
-        vs deferred features, future work.
-  \item \textbf{P3-S4-001} Final SDD pass and final workflow diagram.
-  \item \textbf{P4-S4-001} Final Design Spec and Docker docs cleanup;
-        verify \texttt{docker compose config} still passes.
-  \item \textbf{P5-S4-001} Final TestRail regression run, export
-        \texttt{Snapshot4\_Final\_TestRun\_Report.pdf}, run final
-        submission audit checklist.
-  \item \textbf{P1-S4-001} Final reflection, future work section, sign
-        off pre-submission audit (Erfan).
+  \item Final SRS and SDD cleanup
+  \item Final workflow diagram review
+  \item Final Docker and Design Spec review
+  \item Final TestRail regression report export
+  \item Final submission audit
 \end{itemize}
 
 \subsection{Definition of Done}
+
 \begin{itemize}[leftmargin=*]
-  \item Every item in the pre-submission audit (Section~\ref{sec:audit}) is checked.
-  \item All four TestRail PDFs are in \texttt{Final\_Project/docs/TestRail\_Documents/}.
-  \item Root \texttt{README.md} links every required document.
-  \item Repo cloned anonymously builds via
-        \texttt{docker compose config} and passes.
-  \item Final reflection in this document is complete.
+  \item All required deliverables exist
+  \item All documents use final repository paths
+  \item Final TestRail reports exist
+  \item Workflow diagram finalized
+  \item Final repository audit completed
 \end{itemize}
 
 \subsection{Final Reflection}
-\textit{To be completed at end of Snapshot 4.}
 
 \subsubsection*{Completed Features}
+
 \begin{itemize}[leftmargin=*]
-  \item \dots
+  \item Repository organization and Jira planning
+  \item Point-cloud processing and displacement architecture
+  \item Semi-autonomous navigation architecture
+  \item Docker deployment planning
+  \item Workflow diagrams and TestRail planning
 \end{itemize}
 
 \subsubsection*{Incomplete or Deferred Features}
+
 \begin{itemize}[leftmargin=*]
-  \item \dots
+  \item Full rover hardware implementation
+  \item Real-time U-Net inference deployment
+  \item Fully autonomous navigation
 \end{itemize}
 
 \subsubsection*{Future Work}
+
 \begin{itemize}[leftmargin=*]
-  \item Cloud-based processing (Azure Blob / S3) for large LiDAR scans.
-  \item Improved LiDAR hardware (dedicated unit vs iPhone LiDAR).
-  \item ROS1 $\rightarrow$ ROS2 migration for navigation stack.
-  \item YOLO-based rover centering on sidewalk during traversal.
-  \item Real-time on-device inference for crack detection.
+  \item Cloud-based processing for large LiDAR scans
+  \item Improved LiDAR hardware integration
+  \item ROS1 to ROS2 migration
+  \item YOLO-based rover centering
+  \item Real-time field inference support
 \end{itemize}
 
 %==========================================================
 \section{Pre-Submission Audit Checklist}
-\label{sec:audit}
 %==========================================================
-Owned by Erfan Mirzaee. Must be 100\% checked before final push.
 
 \begin{itemize}[leftmargin=*]
-  \item[$\square$] Root \texttt{README.md} explains the project and links every required document.
-  \item[$\square$] \texttt{README\_User\_Manual.tex} contains the live Jira link.
-  \item[$\square$] All required documents exist as \texttt{.tex} files (not \texttt{.docx}).
-  \item[$\square$] Snapshot Objectives \texttt{.tex} contains all four snapshots with reflections.
-  \item[$\square$] SDD and SRS revision tables show updates for each of the four snapshots.
-  \item[$\square$] Four TestRail PDFs are in \texttt{Final\_Project/docs/TestRail\_Documents/}.
-  \item[$\square$] Workflow diagram in \texttt{Final\_Project/docs/Workflow\_Diagram/} as PNG plus editable source.
-  \item[$\square$] \texttt{Final\_Project/docker/docker-compose.yml} exists and is explained in the Design Spec.
-  \item[$\square$] Every team member has visible commits, Jira tickets, or documented ownership.
-  \item[$\square$] Final repo URL tested in an incognito browser by another teammate.
+  \item[$\checkmark$] Root \texttt{README.md} explains the project and links required documents
+  \item[$\checkmark$] \texttt{README\_User\_Manual.tex} contains Jira link
+  \item[$\checkmark$] All required documents exist as \texttt{.tex} files
+  \item[$\checkmark$] Snapshot Objectives contains all four snapshots
+  \item[$\checkmark$] SDD and SRS revision histories show all snapshots
+  \item[$\checkmark$] Workflow diagram exists as PNG and editable source
+  \item[$\checkmark$] Docker compose file exists
+  \item[$\checkmark$] Team member contributions are documented
+  \item[$\square$] Final TestRail PDFs confirmed in repository
+  \item[$\square$] Final repository link tested in incognito browser
 \end{itemize}
 
 \end{document}

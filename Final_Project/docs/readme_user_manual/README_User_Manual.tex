@@ -17,8 +17,7 @@ The system supports safer sidewalks by organizing data collection, image process
 
 \section{How to Download}
 \begin{verbatim}
-git clone https://github.com/YOUR-ORG/cs3338-la-sidewalk-assessment-simulation.git
-cd cs3338-la-sidewalk-assessment-simulation
+git clone https://github.com/dar-ienn/CS3338-final-project.git
 \end{verbatim}
 
 \section{How to Run With Docker}
@@ -33,7 +32,38 @@ docker compose up
 Processed sample outputs are stored in tests/sample_outputs and storage/processed.
 
 \section{Folder Map}
+
+\begin{itemize}
+    \item docs/sdd - Software Design Document
+    \item docs/srs - Software Requirements Specification
+    \item docs/design_spec - Design Specification
+    \item docs/readme_user_manual - User Manual and setup instructions
+    \item docs/snapshot_objectives - Snapshot planning and reflections
+    \item docs/workflow - Workflow diagrams and architecture visuals
+    \item docker - Docker configuration files
+    \item testrail - Exported TestRail reports
+    \item src - Simulated frontend, backend, ML, and navigation services
+    \item tests - Manual testing templates and sample outputs
+    \item storage - Simulated raw and processed storage directories
+\end{itemize}
+
 \section{Known Limitations}
+
+\begin{itemize}
+    \item The project is a simulated software engineering workflow and does not represent a fully deployed rover system.
+    \item U-Net segmentation and navigation systems are documented architecturally rather than fully implemented.
+    \item Docker services represent planned deployment architecture.
+    \item Real-world rover hardware integration is outside the scope of this CS3338 simulation project.
+\end{itemize}
+
 \section{Team Roles}
+
+\begin{itemize}
+    \item Erfan Mirzaee - Project Manager / Jira Lead
+    \item James Barron - SRS / Requirements Lead
+    \item Elijah Rodriguez - SDD / Architecture Lead
+    \item Andrew - Design Spec / Docker Lead
+    \item Darien Amador - QA / TestRail / Documentation Lead
+\end{itemize}
 
 \end{document}
