@@ -50,12 +50,12 @@ Final_Project/
 | Document | Path | Owner |
 |---|---|---|
 | Snapshot Objectives | [`Final_Project/docs/Snapshot_Objectives/Snapshot_Objectives.tex`](Final_Project/docs/Snapshot_Objectives/Snapshot_Objectives.tex) | Erfan |
-| Software Requirements Specification | `Final_Project/docs/Software_Requirement_Specifications/SRS.tex` | James |
-| Software Design Document | `Final_Project/docs/Software_Design_Document/SDD.tex` | Elijah |
-| README / User Manual | `Final_Project/docs/User_Manual/README_User_Manual.tex` | Darien |
+| Software Requirements Specification | `Final_Project/docs/srs/SRS.tex` | James |
+| Software Design Document | `Final_Project/docs/sdd/SDD.tex` | Elijah |
+| README / User Manual | `Final_Project/docs/readme_user_manual/README_User_Manual.tex` | Darien |
 | Design Specification | `Final_Project/docs/Design_Spec/Design_Spec.tex` | Andrew |
-| Workflow Diagram | `Final_Project/docs/Workflow_Diagram/` | Elijah |
-| TestRail Reports (×4) | `Final_Project/docs/TestRail_Documents/` | Darien |
+| Workflow Diagram | `Final_Project/docs/workflow/` | Elijah |
+| TestRail Reports (×4) | `Final_Project/docs/testrail/` | Darien |
 | Docker Compose | `Final_Project/docker/docker-compose.yml` | Andrew |
 
 ## Snapshot Schedule
